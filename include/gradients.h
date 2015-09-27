@@ -1,4 +1,5 @@
 #ifndef __GRADIENTS_H__
+#define __GRADIENTS_H__
 #include "TColor.h"
 #include "TStyle.h"
 void rainbowgradient()
@@ -36,7 +37,7 @@ void redbluegradient()
 	double red[NRGBs]   = { 0.00, 1.00, 1.00 };
 	double green[NRGBs] = { 0.00, 1.00, 0.00 };
 	double blue[NRGBs]  = { 1.00, 1.00, 0.00 };
-	
+
 	TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
 	gStyle->SetNumberContours(NCont);
 	return;
@@ -50,7 +51,7 @@ void heatmapgradient()
 	double red[NRGBs]   = { 0.00, 0.00, 0.60, 1.00, 1.00, 1.00 };
 	double green[NRGBs] = { 0.00, 0.00, 0.00, 0.75, 1.00, 1.00 };
 	double blue[NRGBs]  = { 0.00, 0.70, 0.60, 0.00, 0.00, 0.00 };
-	
+
 	TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
 	gStyle->SetNumberContours(NCont);
 	return;
@@ -63,7 +64,7 @@ void heatmapRB()
 	double red[NRGBs]   = { 0.00, 0.25, 1.00, 1.00};
 	double green[NRGBs] = { 0.00, 0.00, 0.00, 0.00};
 	double blue[NRGBs]  = { 0.50, 0.75, 0.00, 0.00};
-	
+
 	TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
 	gStyle->SetNumberContours(NCont);
 	return;
@@ -76,7 +77,7 @@ void DarkBodyRadiator()
 	double red[NRGBs]   = { 0.00, 1.00, 1.00 };
 	double green[NRGBs] = { 0.00, 0.50, 1.00 };
 	double blue[NRGBs]  = { 0.00, 0.00, 0.00 };
-	
+
 	TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
 	gStyle->SetNumberContours(NCont);
 	return;
@@ -89,8 +90,9 @@ void DarkBodyRadiator2()
 	double red[NRGBs]   = { 0.00, 1.00, 1.00, 1.00 };
 	double green[NRGBs] = { 0.00, 0.50, 1.00, 1.00 };
 	double blue[NRGBs]  = { 0.00, 0.00, 0.00, 1.00 };
-	
+
 	TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
 	gStyle->SetNumberContours(NCont);
 	return;
 }
+#endif
