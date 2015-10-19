@@ -1,16 +1,46 @@
 #ifndef __PLOTMAKER_H__
 #define __PLOTMAKER_H__
-#include "TLatex.h"
+#include "TCanvas.h"
+#include "TPad.h"
+#include "RooPlot.h"
+#include <string>
 using namespace std;
 class plotmaker
 {
   private:
-    TLatex blurb;
-    int year,xpos,ypos;
-    bool paper;
+    void     init();
+    // The blurb
+    TLatex*  _blurb;
+    string   _blurbtext;
+    float    _blurbx;
+    float    _blurby;
+    // Objects to draw on
+    TCanvas* _canvas;
+    TPad*    _mainpad;
+    TPad*    _pullpad;
+    // The plots
+    RooPlot* _mainplot;
+    RooPlot* _pullplot;
+    // Axis label & unit
+    string   _xtitle;
+    string   _unit;
+    // Keep track whether or not a pull plot has been given
+    bool     _usepull;
+    // Style options common to main and pull plots
+    void     styleframe(RooPlot*);
   public:
-    plotmaker();
-    TLatex* getBlurb();
-    
+    // Constructors
+    plotmaker(TCanvas*,RooPlot*);
+    plotmaker(TCanvas*,RooPlot*,RooPlot*);
+    ~plotmaker();
+    // Get and set variables
+    TCanvas* GetCanvas() {return _canvas;}
+    string   GetBlurb()  {return _blurbtext ;}
+    void     SetBlurb(string);
+    void     SetBlurbPosition(float,float);
+    void     SetPullPlot(RooPlot*);
+    void     SetTitle(string,string);
+    // Do stuff
+    void     Draw();
 };
 #endif
