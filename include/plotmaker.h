@@ -3,6 +3,7 @@
 #include "TCanvas.h"
 #include "TPad.h"
 #include "RooPlot.h"
+#include "TLatex.h"
 #include <string>
 using namespace std;
 class plotmaker
@@ -30,8 +31,8 @@ class plotmaker
     void     styleframe(RooPlot*);
   public:
     // Constructors
-    plotmaker(TCanvas*,RooPlot*);
-    plotmaker(TCanvas*,RooPlot*,RooPlot*);
+    plotmaker(RooPlot*);
+    plotmaker(RooPlot*,RooPlot*);
     ~plotmaker();
     // Get and set variables
     TCanvas* GetCanvas() {return _canvas;}
@@ -41,6 +42,6 @@ class plotmaker
     void     SetPullPlot(RooPlot*);
     void     SetTitle(string,string);
     // Do stuff
-    void     Draw();
+    TCanvas* Draw();
 };
 #endif
