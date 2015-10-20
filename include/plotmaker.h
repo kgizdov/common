@@ -10,6 +10,7 @@ class plotmaker
 {
   private:
     void     init();
+    void     makepads();
     // The blurb
     TLatex*  _blurb;
     string   _blurbtext;
@@ -25,6 +26,7 @@ class plotmaker
     // Axis label & unit
     string   _xtitle;
     string   _unit;
+    bool     _dimensionless;
     // Keep track whether or not a pull plot has been given
     bool     _usepull;
     // Style options common to main and pull plots

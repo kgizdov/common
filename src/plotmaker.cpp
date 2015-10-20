@@ -1,4 +1,5 @@
 #include "TLatex.h"
+#include "TMath.h"
 #include "TAxis.h"
 #include "TStyle.h"
 #include "RooHist.h"
@@ -13,7 +14,7 @@ using namespace std;
 plotmaker::plotmaker(RooPlot* mainplot) :
   _mainplot(mainplot)
 {
-  _canvas = new TCanvas("canvas","",1200,900);
+
   _usepull = false;
   init();
 }
@@ -22,7 +23,6 @@ plotmaker::plotmaker(RooPlot* mainplot, RooPlot* pullplot) :
   _mainplot(mainplot),
   _pullplot(pullplot)
 {
-  _canvas = new TCanvas("canvas","",1200,1200);
   _usepull = true;
   init();
 }
@@ -35,14 +35,20 @@ plotmaker::~plotmaker()
 // Set default values for variables and set things up for drawing.
 void plotmaker::init()
 {
-  _canvas->Draw();
-  _blurbx    = 0.75;
-  _blurby    = 0.80;
-  _blurbtext = "LHCb";
-  _xtitle    = "#it{m}(#it{K^{#plus}K^{#minus}K^{#plus}K^{#minus}})";
-  _unit      = "MeV/#it{c}^{2}";
-  if(_usepull)
+  _blurbx        = 0.75;
+  _blurby        = 0.80;
+  _blurbtext     = "LHCb";
+  _xtitle        = "#it{m}(#it{K^{#plus}K^{#minus}K^{#plus}K^{#minus}})";
+  _unit          = "MeV/#it{c}^{2}";
+  _dimensionless = false;
+  makepads();
+}
+void plotmaker::makepads()
+{
+  if(_usepull)  
   {
+    _canvas = new TCanvas("canvas","",1200,1200);
+    _canvas->Draw();
     _mainpad = new TPad("mainpad", "", 0.00, 0.25, 1.00, 1.00);
     _mainpad->SetMargin(0.15,0.05,0.03,0.05);
     _mainpad->SetTicks(1,1);
@@ -59,6 +65,8 @@ void plotmaker::init()
   }
   else
   {
+    _canvas = new TCanvas("canvas","",1200,900);
+    _canvas->Draw();
     _mainpad = new TPad("mainpad", "", 0.00, 0.00, 1.00, 1.00);
     _mainpad->SetMargin(0.15,0.05,0.15,0.05);
     _mainpad->SetTicks(1,1);
@@ -85,9 +93,7 @@ void plotmaker::styleframe(RooPlot* frame)
   frame->SetLabelFont(132, "y");
   frame->SetNdivisions(505,"x");
   frame->GetYaxis()->CenterTitle();
-  string unit_lower = _unit;
-  transform(unit_lower.begin(), unit_lower.end(), unit_lower.begin(), ::toupper);
-  if(unit_lower == "dimensionless" || unit_lower == "unitless" || unit_lower == "none")
+  if(_dimensionless)
   {
     frame->SetXTitle(("#font[132]{}"+_xtitle).c_str());
   }
@@ -97,7 +103,20 @@ void plotmaker::styleframe(RooPlot* frame)
   }
 }
 /*****************************************************************************/
-
+void plotmaker::SetPullPlot(RooPlot* pullplot)
+{
+  _pullplot = pullplot;
+  _usepull = true;
+  makepads();
+}
+/*****************************************************************************/
+void plotmaker::SetTitle(string xtitle, string unit)
+{
+  _xtitle = xtitle;
+  _unit = unit;
+  transform(unit.begin(), unit.end(), unit.begin(), ::tolower);
+  _dimensionless = (unit == "dimensionless" || unit == "unitless" || unit == "none" || unit == "");
+}
 /*****************************************************************************/
 TCanvas* plotmaker::Draw()
 {
@@ -106,7 +125,13 @@ TCanvas* plotmaker::Draw()
   styleframe(_mainplot);
   // Axis titles
   stringstream ytitle;
-  ytitle << "#font[132]{}Candidates / (" << setprecision(1) << fixed << _mainplot->getFitRangeBinW() << " " << _unit << ")";
+  float binw = _mainplot->getFitRangeBinW();
+  ytitle << "#font[132]{}Candidates / (" << TMath::Nint(binw*pow(10.0,ceil(-log10(binw))))*pow(10.0,floor(log10(binw)));
+  if(!_dimensionless)
+  {
+    ytitle << " " << _unit;
+  }
+  ytitle << ")";
   _mainplot->SetYTitle(ytitle.str().c_str());
   _mainplot->SetTitleOffset(1.20,"x");
   _mainplot->SetTitleOffset(1.10,"y");
