@@ -4,13 +4,14 @@
 #include "RooHist.h"
 #include "plotmaker.h"
 #include <sstream>
+#include <algorithm>
 using namespace std;
 /*****************************************************************************/
 // Constructor without pull plot
 plotmaker::plotmaker(RooPlot* mainplot) :
   _mainplot(mainplot)
 {
-  _canvas = new TCanvas("canvas","",1200,1000);
+  _canvas = new TCanvas("canvas","",1200,900);
   _usepull = false;
   init();
 }
@@ -36,8 +37,8 @@ void plotmaker::init()
   _blurbx    = 0.75;
   _blurby    = 0.80;
   _blurbtext = "LHCb";
-  _xtitle    = "#font[12]{m}(#font[12]{K^{#plus}K^{#minus}K^{#plus}K^{#minus}})";
-  _unit      = "MeV/#font[12]{c}#font[132]{^{2}}";
+  _xtitle    = "#it{m}(#it{K^{#plus}K^{#minus}K^{#plus}K^{#minus}})";
+  _unit      = "MeV/#it{c}^{2}";
   if(_usepull)
   {
     _mainpad = new TPad("mainpad", "", 0.00, 0.25, 1.00, 1.00);
@@ -82,7 +83,16 @@ void plotmaker::styleframe(RooPlot* frame)
   frame->SetLabelFont(132, "y");
   frame->SetNdivisions(505,"x");
   frame->GetYaxis()->CenterTitle();
-  frame->SetXTitle(("#font[132]{}"+_xtitle+" #font[132]{}["+_unit+"]").c_str());
+  string unit_lower = _unit;
+  transform(unit_lower.begin(), unit_lower.end(), unit_lower.begin(), ::toupper);
+  if(unit_lower == "dimensionless" || unit_lower == "unitless" || unit_lower == "none")
+  {
+    frame->SetXTitle(("#font[132]{}"+_xtitle).c_str());
+  }
+  else
+  {
+    frame->SetXTitle(("#font[132]{}"+_xtitle+" #font[132]{}["+_unit+"]").c_str());
+  }
 }
 /*****************************************************************************/
 
