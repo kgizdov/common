@@ -3,6 +3,8 @@
 #include "TStyle.h"
 #include "RooHist.h"
 #include "plotmaker.h"
+#include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <algorithm>
 using namespace std;
