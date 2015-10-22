@@ -127,7 +127,13 @@ TCanvas* plotmaker::Draw()
   // Axis titles
   stringstream ytitle;
   float binw = _mainplot->getFitRangeBinW();
-  ytitle << "#font[132]{}Candidates / (" << TMath::Nint(binw*pow(10.0,ceil(-log10(binw))))*pow(10.0,floor(log10(binw)));
+  ytitle << "#font[132]{}Candidates / (";
+  if(binw > 10)
+    ytitle << TMath::Nint(binw);
+  else if (binw > 0.1)
+    ytitle << TMath::Nint(binw*10.0)/10.0;
+  else
+    ytitle << TMath::Nint(binw*pow(10.0,ceil(-log10(binw))))*pow(10.0,floor(log10(binw)));
   if(!_dimensionless)
   {
     ytitle << " " << _unit;
