@@ -47,13 +47,13 @@ void plotmaker::makepads()
 {
   if(_usepull)  
   {
-    _canvas = new TCanvas("canvas","",1200,1200);
+    _canvas = new TCanvas("canvas","",1200,1000);
     _canvas->Draw();
-    _mainpad = new TPad("mainpad", "", 0.00, 0.25, 1.00, 1.00);
+    _mainpad = new TPad("mainpad", "", 0.00, 0.3, 1.00, 1.00);
     _mainpad->SetMargin(0.15,0.05,0.03,0.05);
     _mainpad->SetTicks(1,1);
     _mainpad->Draw();
-    _pullpad = new TPad("pullpad", "", 0.00, 0.00, 1.00, 0.25);
+    _pullpad = new TPad("pullpad", "", 0.00, 0.00, 1.00, 0.3);
     _pullpad->SetMargin(0.15,0.05,0.50,0.02);
     _pullpad->SetTicks(1,1);
     _pullpad->Draw();
@@ -68,7 +68,7 @@ void plotmaker::makepads()
     _canvas = new TCanvas("canvas","",1200,900);
     _canvas->Draw();
     _mainpad = new TPad("mainpad", "", 0.00, 0.00, 1.00, 1.00);
-    _mainpad->SetMargin(0.15,0.05,0.15,0.05);
+    _mainpad->SetMargin(0.15,0.05,0.2,0.05);
     _mainpad->SetTicks(1,1);
     _mainpad->Draw();
   }
@@ -112,6 +112,7 @@ void plotmaker::SetPullPlot(RooPlot* pullplot)
 /*****************************************************************************/
 void plotmaker::SetTitle(string xtitle, string unit)
 {
+  replace(xtitle.begin(), xtitle.end(), '~', ' ');
   _xtitle = xtitle;
   _unit = unit;
   transform(unit.begin(), unit.end(), unit.begin(), ::tolower);
@@ -133,13 +134,13 @@ TCanvas* plotmaker::Draw()
   }
   ytitle << ")";
   _mainplot->SetYTitle(ytitle.str().c_str());
-  _mainplot->SetTitleOffset(1.20,"x");
+  _mainplot->SetTitleOffset(1.10,"x");
   _mainplot->SetTitleOffset(1.10,"y");
-  _mainplot->SetTitleSize  (0.06,"x");
-  _mainplot->SetTitleSize  (0.06,"y");
+  _mainplot->SetTitleSize  (0.065,"x");
+  _mainplot->SetTitleSize  (0.065,"y");
   // Axis labels
-  _mainplot->SetLabelSize  (0.05,"x");
-  _mainplot->SetLabelSize  (0.05,"y");
+  _mainplot->SetLabelSize  (0.055,"x");
+  _mainplot->SetLabelSize  (0.055,"y");
   _mainplot->SetLabelOffset(0.015,"x");
   // Pull frame style
   if(_usepull)
