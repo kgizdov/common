@@ -37,7 +37,7 @@ void plotmaker::init()
 {
   _blurbx        = 0.75;
   _blurby        = 0.80;
-  _blurbtext     = "LHCb";
+  _blurbtext     = "#splitline{LHCb}{#scale[0.75]{Preliminary}}";
   _xtitle        = "#it{m}(#it{K^{#plus}K^{#minus}K^{#plus}K^{#minus}})";
   _unit          = "MeV/#it{c}^{2}";
   _dimensionless = false;
