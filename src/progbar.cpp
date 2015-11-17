@@ -47,7 +47,7 @@ void progbar::print(int ievent)
 void progbar::terminate()
 {
   this->print(nevents-1);
-  cout << "\t " << nevents << " events processed " << endl;
+  cout << "\t " << nevents << " events processed " << setfill(' ') << endl;
   return;
 }
 void progbar::reset()
