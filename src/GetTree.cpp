@@ -32,6 +32,8 @@ TTree* GetTree(string filename, TCut* cut)
 /*****************************************************************************/
 TTree* GetTree(TFile* file, TCut* cut)
 {
+  TFile* tempfile = new TFile("/tmp/temp.root","RECREATE");
+  tempfile->cd();
   TTree* tree;
   // This list can be freely extended without having to alter any other lines
   vector<string> treenames = {"DecayTreeTuple/DecayTree"
