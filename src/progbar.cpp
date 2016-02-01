@@ -38,7 +38,7 @@ void progbar::print(int ievent)
   for(int ibar = 0; ibar < (perc*barwidth)/100; ibar++)
     cout << "█";
   for(int ibar = (perc*barwidth)/100; ibar < barwidth; ibar++)
-    cout << " ";
+    cout << "░";
   cout << "┃ " << perc << "% " << flush;
   long t1 = time(0);
   cout << (t1-t0)/60 << ":" << setw(2) << setfill('0') << (t1-t0)%60 << "\e[?25h" << flush;
