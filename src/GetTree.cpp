@@ -39,5 +39,5 @@ TTree* GetTree(TFile* file, TCut* cut)
     if(tree != (TTree*)0x0) break;
     if(name == treenames.back()) throw runtime_error("Couldn't find tree.");
   }
-  return tree;
+  return tree->CopyTree(cut);
 }
