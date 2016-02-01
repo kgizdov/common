@@ -46,3 +46,4 @@ TTree* GetTree(TFile* file, TCut* cut)
   }
   return tree->CopyTree(*cut);
 }
+
