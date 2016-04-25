@@ -30,7 +30,7 @@ LIBS      := $(patsubst $(SRCDIR)/%.$(SRCEXT),$(LIBDIR)/lib%.$(LIBEXT),$(SRCS))
 OUTPUT     = $(OBJDIR)/*.$(OBJEXT) $(LIBDIR)/*.$(LIBEXT)
 
 # Compiler flags
-CXXFLAGS   = -Wall -Werror -fPIC -I$(HDRDIR) $(ROOTCFLAGS)
+CXXFLAGS   = -Wall -Werror -fPIC -std=c++11 -I$(HDRDIR) $(ROOTCFLAGS)
 
 # Make the libraries
 all : $(LIBS)
