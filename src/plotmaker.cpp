@@ -119,7 +119,7 @@ void plotmaker::SetTitle(string xtitle, string unit)
   _dimensionless = (unit == "dimensionless" || unit == "unitless" || unit == "none" || unit == "");
 }
 /*****************************************************************************/
-TCanvas* plotmaker::Draw()
+TCanvas* plotmaker::Draw(bool logy)
 {
   gStyle->SetOptStat(0);
   // Main frame style
@@ -186,6 +186,7 @@ TCanvas* plotmaker::Draw()
     _pullplot->Draw();
   }
   _mainpad->cd();
+  if(logy) _mainpad->SetLogy();
   _mainplot->Draw();
   // Blurb
   _blurb = new TLatex(_blurbx,_blurby,_blurbtext.c_str());

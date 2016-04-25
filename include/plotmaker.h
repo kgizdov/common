@@ -44,6 +44,6 @@ class plotmaker
     void     SetPullPlot(RooPlot*);
     void     SetTitle(string,string);
     // Do stuff
-    TCanvas* Draw();
+    TCanvas* Draw(bool logy = false);
 };
 #endif
