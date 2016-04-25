@@ -1,4 +1,7 @@
 #include "GetTree.h"
+#include "TCollection.h"
+#include "TKey.h"
+#include "TDirectoryFile.h"
 #include <stdexcept>
 #include <vector>
 using namespace std;
@@ -40,11 +43,43 @@ TTree* GetTree(TFile* file, TCut* cut)
                              ,"DecayTree"
                              ,"MCDecayTreeTuple/MCDecayTree"
                              ,"MCDecayTree"};
+  bool planB = false;
   for(auto name: treenames) // C++11 magic
   {
+    // Look for a tree with a name in the list
     tree = (TTree*)file->Get(name.c_str());
     if(tree != (TTree*)0x0) break;
-    if(name == treenames.back()) throw runtime_error("Couldn't find tree.");
+    if(name == treenames.back()) planB = true;
+  }
+  if(planB)
+  {
+    printf("Warning: tree with standard name not found. Attempting a search.\n");
+    // Look for any tree or directory
+    TIter next = file->GetListOfKeys();
+    TKey* key;
+    TDirectoryFile* directory;
+    while((key = (TKey*)next()))
+    {
+      // Look for any tree in the directory
+      if(strcmp(key->GetClassName(),"TTree")==0)
+      {
+        tree = (TTree*)key->ReadObj();
+        break;
+      }
+      else if(strcmp(key->GetClassName(),"TDirectoryFile")==0)
+      {
+        directory = (TDirectoryFile*)key->ReadObj();
+        TIter dirnext = directory->GetListOfKeys();
+        TKey* dirkey;
+        while((dirkey = (TKey*)dirnext()))
+        {
+          tree = (TTree*)key->ReadObj();
+        }
+      }
+      if(tree != (TTree*)0x0) break;
+    }
+    if(tree == (TTree*)0x0) throw runtime_error("Couldn't find tree.");
+    else printf("Tree found with name '%s'\n",tree->GetName());
   }
   return tree->CopyTree(*cut);
 }
