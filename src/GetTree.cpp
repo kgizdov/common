@@ -63,17 +63,21 @@ TTree* GetTree(TFile* file, TCut* cut)
     {
       if(strcmp(key->GetClassName(),"TTree")==0)
       {
+        // OK, great, you've found a tree. Let's go.
         tree = (TTree*)key->ReadObj();
         break;
       }
       else if(strcmp(key->GetClassName(),"TDirectoryFile")==0)
       {
+        // Well, you've found a first-level directory.
+        // Maybe there's a tree in here.
         directory = (TDirectoryFile*)key->ReadObj();
         TIter dirnext = directory->GetListOfKeys();
         TKey* dirkey;
-        // Look for any tree in the directory
+        // Look for any tree in the directory.
         while((dirkey = (TKey*)dirnext()))
         {
+          // Found a tree in a first-level directory.
           tree = (TTree*)key->ReadObj();
         }
       }
