@@ -54,13 +54,13 @@ TTree* GetTree(TFile* file, TCut* cut)
   if(planB)
   {
     printf("Warning: tree with standard name not found. Attempting a search.\n");
-    // Look for any tree or directory
+
     TIter next = file->GetListOfKeys();
     TKey* key;
     TDirectoryFile* directory;
+    // Look for any tree or directory
     while((key = (TKey*)next()))
     {
-      // Look for any tree in the directory
       if(strcmp(key->GetClassName(),"TTree")==0)
       {
         tree = (TTree*)key->ReadObj();
@@ -71,6 +71,7 @@ TTree* GetTree(TFile* file, TCut* cut)
         directory = (TDirectoryFile*)key->ReadObj();
         TIter dirnext = directory->GetListOfKeys();
         TKey* dirkey;
+        // Look for any tree in the directory
         while((dirkey = (TKey*)dirnext()))
         {
           tree = (TTree*)key->ReadObj();
