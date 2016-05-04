@@ -35,7 +35,8 @@ TTree* GetTree(string filename, TCut* cut)
 /*****************************************************************************/
 TTree* GetTree(TFile* file, TCut* cut)
 {
-  TFile* tempfile = new TFile("/tmp/temp.root","RECREATE");
+  string tempfilename = "/tmp/"+(string)file->GetName();
+  TFile* tempfile = new TFile(tempfilename.c_str(),"RECREATE");
   tempfile->cd();
   TTree* tree;
   // This list can be freely extended without having to alter any other lines
