@@ -9,7 +9,7 @@ using namespace std;
 // Overloading the function with all reasonable ways you might want to call it
 TTree* GetTree(string filename)
 {
-  TTree* tree = GetTree(new TFile(filename.c_str()), "");
+  TTree* tree = GetTree(TFile::Open(filename.c_str()), "");
   return tree;
 }
 TTree* GetTree(TFile* file)
@@ -19,7 +19,7 @@ TTree* GetTree(TFile* file)
 }
 TTree* GetTree(string filename, string cutstring)
 {
-  TTree* tree = GetTree(new TFile(filename.c_str()), new TCut(cutstring.c_str()));
+  TTree* tree = GetTree(TFile::Open(filename.c_str()), new TCut(cutstring.c_str()));
   return tree;
 }
 TTree* GetTree(TFile* file, string cutstring)
@@ -29,13 +29,16 @@ TTree* GetTree(TFile* file, string cutstring)
 }
 TTree* GetTree(string filename, TCut* cut)
 {
-  TTree* tree = GetTree(new TFile(filename.c_str()), cut);
+  TTree* tree = GetTree(TFile::Open(filename.c_str()), cut);
   return tree;
 }
 /*****************************************************************************/
 TTree* GetTree(TFile* file, TCut* cut)
 {
-  string tempfilename = "/tmp/"+(string)file->GetName();
+  string filename = (string)file->GetName();
+  size_t mode_start = filename.find('/')==string::npos ? 0 : filename.find_last_of('/') + 1;
+  string tempfilename = "/tmp/"+filename.substr(mode_start);
+  printf("Making temporary file %s\n",tempfilename.c_str());
   TFile* tempfile = new TFile(tempfilename.c_str(),"RECREATE");
   tempfile->cd();
   TTree* tree;
