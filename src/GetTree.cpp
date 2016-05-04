@@ -4,11 +4,13 @@
 #include "TDirectoryFile.h"
 #include <stdexcept>
 #include <vector>
+#include <iostream>
 using namespace std;
 /*****************************************************************************/
 // Overloading the function with all reasonable ways you might want to call it
 TTree* GetTree(string filename)
 {
+  cout << "Opening " << filename << endl;
   TTree* tree = GetTree(TFile::Open(filename.c_str()), "");
   return tree;
 }
@@ -19,6 +21,7 @@ TTree* GetTree(TFile* file)
 }
 TTree* GetTree(string filename, string cutstring)
 {
+  cout << "Opening " << filename << endl;
   TTree* tree = GetTree(TFile::Open(filename.c_str()), new TCut(cutstring.c_str()));
   return tree;
 }
@@ -29,6 +32,7 @@ TTree* GetTree(TFile* file, string cutstring)
 }
 TTree* GetTree(string filename, TCut* cut)
 {
+  cout << "Opening " << filename << endl;
   TTree* tree = GetTree(TFile::Open(filename.c_str()), cut);
   return tree;
 }
@@ -37,8 +41,8 @@ TTree* GetTree(TFile* file, TCut* cut)
 {
   string filename = (string)file->GetName();
   size_t mode_start = filename.find('/')==string::npos ? 0 : filename.find_last_of('/') + 1;
-  string tempfilename = "/tmp/"+filename.substr(mode_start);
-  printf("Making temporary file %s\n",tempfilename.c_str());
+  string tempfilename = "/tmp/GetTree_"+filename.substr(mode_start);
+  cout << "Making temporary file " << tempfilename << endl;
   TFile* tempfile = new TFile(tempfilename.c_str(),"RECREATE");
   tempfile->cd();
   TTree* tree;
@@ -57,7 +61,7 @@ TTree* GetTree(TFile* file, TCut* cut)
   }
   if(planB)
   {
-    printf("Warning: tree with standard name not found. Attempting a search.\n");
+    cout << "Warning: tree with standard name not found. Attempting a search." << endl;
     TIter next = file->GetListOfKeys();
     TKey* key;
     TDirectoryFile* directory;
@@ -87,8 +91,16 @@ TTree* GetTree(TFile* file, TCut* cut)
       if(tree != (TTree*)0x0) break;
     }
     if(tree == (TTree*)0x0) throw runtime_error("Couldn't find tree.");
-    else printf("Tree found with name '%s'\n",tree->GetName());
   }
-  return tree->CopyTree(*cut);
+  cout << "Tree found with name " << tree->GetName() << endl;
+  if(!((string)cut->GetTitle()).empty())
+  {
+    cout << "Cutting tree." << endl;
+    return tree->CopyTree(*cut);
+  }
+  else
+  {
+    return tree;
+  }
 }
 
