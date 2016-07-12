@@ -6,7 +6,7 @@ RM         = rm -f
 
 # Include ROOT files as system headers as they're NOT standards complient and we do not want to waste time fixing them!
 # ROOT has some broken backwards compatability for OSX so won't claim to be a set of system headers
-ROOTCFLAGS = -L$(ROOTSYS)/lib $(shell $(ROOTSYS)/bin/root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
+ROOTCFLAGS = $(shell $(ROOTSYS)/bin/root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
 
 # Extensions
 SRCEXT     = cpp
