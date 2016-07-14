@@ -4,9 +4,14 @@ CC         = g++
 SHELL      = /bin/bash
 RM         = rm -f
 
-# Include ROOT files as system headers as they're NOT standards complient and we do not want to waste time fixing them!
-# ROOT has some broken backwards compatability for OSX so won't claim to be a set of system headers
-ROOTCFLAGS = $(shell $(ROOTSYS)/bin/root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
+ifndef ROOTSYS
+	ROOTCFLAGS = `root-config --cflags`
+	ROOTLIBS   = `root-config --libs`
+else
+	ROOTCFLAGS = $(shell $(ROOTSYS)/bin/root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
+	ROOTLIBS   = $(shell $(ROOTSYS)/bin/root-config --libs)
+endif
+EXTRA_ROOTLIBS = -lRooFit -lRooStats -lRooFitCore
 
 # Extensions
 SRCEXT     = cpp
@@ -31,6 +36,7 @@ OUTPUT     = $(OBJDIR)/*.$(OBJEXT) $(LIBDIR)/*.$(LIBEXT)
 
 # Compiler flags
 CXXFLAGS   = -Wall -Werror -fPIC -std=c++11 -I$(HDRDIR) $(ROOTCFLAGS)
+LIBFLAGS   = $(ROOTLIBS) $(EXTRA_ROOTLIBS)
 
 # Make the libraries
 all : $(LIBS)
@@ -38,9 +44,9 @@ all : $(LIBS)
 objects : $(OBJS)
 # Build libraries
 $(LIBDIR)/lib%.$(LIBEXT) : $(OBJDIR)/%.$(OBJEXT)
-	$(CC) -shared $< -o $@
+	$(CC) -shared $< -o $@ -Wl,--as-needed $(LIBFLAGS)
 # Build objects
-$(OBJDIR)/%.$(OBJEXT) : $(SRCDIR)/%.$(SRCEXT)
+$(OBJDIR)/%.$(OBJEXT) : $(SRCDIR)/%.$(SRCEXT) $(HDRS)
 	$(CC) $(CXXFLAGS) -c $< -o $@
 # Remove all the output
 clean :
