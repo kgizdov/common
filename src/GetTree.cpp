@@ -40,11 +40,6 @@ TTree* GetTree(string filename, TCut* cut)
 TTree* GetTree(TFile* file, TCut* cut)
 {
   string filename = (string)file->GetName();
-  size_t mode_start = filename.find('/')==string::npos ? 0 : filename.find_last_of('/') + 1;
-  string tempfilename = "/tmp/GetTree_"+filename.substr(mode_start);
-  cout << "Making temporary file " << tempfilename << endl;
-  TFile* tempfile = new TFile(tempfilename.c_str(),"RECREATE");
-  tempfile->cd();
   TTree* tree;
   // This list can be freely extended without having to alter any other lines
   vector<string> treenames = {"DecayTreeTuple/DecayTree"
@@ -95,6 +90,11 @@ TTree* GetTree(TFile* file, TCut* cut)
   cout << "Tree found with name " << tree->GetName() << endl;
   if(!((string)cut->GetTitle()).empty())
   {
+    size_t mode_start = filename.find('/')==string::npos ? 0 : filename.find_last_of('/') + 1;
+    string tempfilename = "/tmp/GetTree_"+filename.substr(mode_start);
+    cout << "Making temporary file " << tempfilename << endl;
+    TFile* tempfile = new TFile(tempfilename.c_str(),"RECREATE");
+    tempfile->cd();
     cout << "Cutting tree." << endl;
     return tree->CopyTree(*cut);
   }
