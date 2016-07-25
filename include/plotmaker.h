@@ -2,6 +2,8 @@
 #define __PLOTMAKER_H__
 #include "TCanvas.h"
 #include "TPad.h"
+#include "TH1.h"
+#include "TGraph.h"
 #include "RooPlot.h"
 #include "TLatex.h"
 #include <string>
@@ -23,6 +25,11 @@ class plotmaker
     // The plots
     RooPlot* _mainplot;
     RooPlot* _pullplot;
+    // The Axes
+    TAxis*   _mainxaxis;
+    TAxis*   _mainyaxis;
+    TAxis*   _pullxaxis;
+    TAxis*   _pullyaxis;
     // Axis label & unit
     string   _xtitle;
     string   _unit;
@@ -31,6 +38,13 @@ class plotmaker
     bool     _usepull;
     // Style options common to main and pull plots
     void     styleframe(RooPlot*);
+    void     styleframe(TH1*);
+    void     setxtitle(TAxis*);
+    void     setytitle(TAxis*);
+    void     stylemainaxis(TAxis*);
+    void     stylepullaxes(TAxis*,TAxis*);
+    void     drawblurb();
+    template<class T> void makesymmetric(T*);
   public:
     // Constructors
     plotmaker(RooPlot*);

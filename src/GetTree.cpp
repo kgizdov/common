@@ -51,7 +51,7 @@ TTree* GetTree(TFile* file, TCut* cut)
   {
     // Look for a tree with a name in the list
     tree = (TTree*)file->Get(name.c_str());
-    if(tree != (TTree*)0x0) break;
+    if(tree != NULL) break;
     if(name == treenames.back()) planB = true;
   }
   if(planB)
@@ -83,9 +83,9 @@ TTree* GetTree(TFile* file, TCut* cut)
           tree = (TTree*)key->ReadObj();
         }
       }
-      if(tree != (TTree*)0x0) break;
+      if(tree != NULL) break;
     }
-    if(tree == (TTree*)0x0) throw runtime_error("Couldn't find tree.");
+    if(tree == NULL) throw runtime_error("Couldn't find tree.");
   }
   cout << "Tree found with name " << tree->GetName() << endl;
   if(!((string)cut->GetTitle()).empty())

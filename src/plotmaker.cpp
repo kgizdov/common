@@ -14,7 +14,8 @@ using namespace std;
 plotmaker::plotmaker(RooPlot* mainplot) :
   _mainplot(mainplot)
 {
-
+  _mainxaxis = mainplot->GetXaxis();
+  _mainyaxis = mainplot->GetYaxis();
   _usepull = false;
   init();
 }
@@ -23,13 +24,26 @@ plotmaker::plotmaker(RooPlot* mainplot, RooPlot* pullplot) :
   _mainplot(mainplot),
   _pullplot(pullplot)
 {
+  _mainxaxis = mainplot->GetXaxis();
+  _mainyaxis = mainplot->GetYaxis();
+  _pullxaxis = pullplot->GetXaxis();
+  _pullyaxis = pullplot->GetYaxis();
   _usepull = true;
   init();
 }
 // Make sure to delete all the "new" objects
 plotmaker::~plotmaker()
 {
-
+  delete _canvas;
+  delete _mainpad;
+  if(_usepull)
+  {
+    delete _pullpad;
+  }
+  if(_blurb != NULL)
+  {
+    delete _blurb;
+  }
 }
 /*****************************************************************************/
 // Set default values for variables and set things up for drawing.
@@ -45,7 +59,7 @@ void plotmaker::init()
 }
 void plotmaker::makepads()
 {
-  if(_usepull)  
+  if(_usepull)
   {
     _canvas = new TCanvas("canvas","",1200,1000);
     _canvas->Draw();
@@ -57,11 +71,6 @@ void plotmaker::makepads()
     _pullpad->SetMargin(0.15,0.05,0.50,0.02);
     _pullpad->SetTicks(1,1);
     _pullpad->Draw();
-    // Remove pull plot errors
-    for(int i = 0; i < _pullplot->getHist()->GetN(); i++)
-    {
-      _pullplot->getHist()->SetPointError(i,0,0,0,0);
-    }
   }
   else
   {
@@ -84,29 +93,15 @@ void plotmaker::SetBlurbPosition(float x, float y)
   _blurby = y;
 }
 /*****************************************************************************/
-void plotmaker::styleframe(RooPlot* frame)
-{
-  frame->SetTitle("");
-  frame->SetTitleFont(132, "x");
-  frame->SetTitleFont(132, "y");
-  frame->SetLabelFont(132, "x");
-  frame->SetLabelFont(132, "y");
-  frame->SetNdivisions(505,"x");
-  frame->GetYaxis()->CenterTitle();
-  if(_dimensionless)
-  {
-    frame->SetXTitle(("#font[132]{}"+_xtitle).c_str());
-  }
-  else
-  {
-    frame->SetXTitle(("#font[132]{}"+_xtitle+" #font[132]{}["+_unit+"]").c_str());
-  }
-}
-/*****************************************************************************/
 void plotmaker::SetPullPlot(RooPlot* pullplot)
 {
   _pullplot = pullplot;
   _usepull = true;
+  // Remove pull plot errors
+  for(int i = 0; i < _pullplot->getHist()->GetN(); i++)
+  {
+    _pullplot->getHist()->SetPointError(i,0,0,0,0);
+  }
   makepads();
 }
 /*****************************************************************************/
@@ -119,14 +114,32 @@ void plotmaker::SetTitle(string xtitle, string unit)
   _dimensionless = (unit == "dimensionless" || unit == "unitless" || unit == "none" || unit == "");
 }
 /*****************************************************************************/
-TCanvas* plotmaker::Draw(bool logy)
+void plotmaker::stylemainaxis(TAxis* axis)
 {
-  gStyle->SetOptStat(0);
-  // Main frame style
-  styleframe(_mainplot);
-  // Axis titles
+  axis->SetTitleFont(132);
+  axis->SetLabelFont(132);
+  axis->SetNdivisions(505);
+  axis->SetTitleOffset(1.10);
+  axis->SetTitleSize  (0.065);
+  axis->SetLabelSize  (0.055);
+  axis->SetLabelOffset(0.015);
+}
+void plotmaker::setxtitle(TAxis* axis)
+{
+  if(_dimensionless)
+  {
+    axis->SetTitle(("#font[132]{}"+_xtitle).c_str());
+  }
+  else
+  {
+    axis->SetTitle(("#font[132]{}"+_xtitle+" #font[132]{}["+_unit+"]").c_str());
+  }
+}
+void plotmaker::setytitle(TAxis* axis)
+{
+  axis->CenterTitle();
   stringstream ytitle;
-  float binw = _mainplot->getFitRangeBinW();
+  double binw = axis->GetBinWidth(1);
   ytitle << "#font[132]{}Candidates / (";
   if(binw > 10)
     ytitle << TMath::Nint(binw);
@@ -139,48 +152,59 @@ TCanvas* plotmaker::Draw(bool logy)
     ytitle << " " << _unit;
   }
   ytitle << ")";
-  _mainplot->SetYTitle(ytitle.str().c_str());
-  _mainplot->SetTitleOffset(1.10,"x");
-  _mainplot->SetTitleOffset(1.10,"y");
-  _mainplot->SetTitleSize  (0.065,"x");
-  _mainplot->SetTitleSize  (0.065,"y");
+  axis->SetTitle(ytitle.str().c_str());
+}
+void plotmaker::stylepullaxes(TAxis* xaxis, TAxis* yaxis)
+{
+  stylemainaxis(xaxis);
+  stylemainaxis(yaxis);
+  // Axis titles
+  yaxis->SetTitle("Pull");
+  xaxis->SetTitleOffset(1.20);
+  yaxis->SetTitleOffset(0.40);
+  xaxis->SetTitleSize  (0.17);
+  yaxis->SetTitleSize  (0.17);
   // Axis labels
-  _mainplot->SetLabelSize  (0.055,"x");
-  _mainplot->SetLabelSize  (0.055,"y");
-  _mainplot->SetLabelOffset(0.015,"x");
+  xaxis->SetLabelSize  (0.15);
+  yaxis->SetLabelSize  (0.10);
+  // Ticks
+  xaxis->SetTickLength(0.1);
+  yaxis->SetNdivisions(5);
+}
+void plotmaker::drawblurb()
+{
+  _blurb = new TLatex(_blurbx,_blurby,_blurbtext.c_str());
+  _blurb->SetTextFont(132);
+  _blurb->SetTextColor(1);
+  _blurb->SetNDC(kTRUE);
+  _blurb->SetTextAlign(11);
+  _blurb->SetTextSize(0.07);
+  _blurb->Draw();
+}
+template<class T> void plotmaker::makesymmetric(T* plot)
+{
+  // Make symmetric around zero
+  double max = plot->GetMaximum();
+  double min = plot->GetMinimum()*-1;
+  double newmax = 1.2*(1+(int)std::max(max,min));
+  plot->SetMaximum(newmax);
+  plot->SetMinimum(-newmax);
+}
+/*****************************************************************************/
+TCanvas* plotmaker::Draw(bool logy)
+{
+  gStyle->SetOptStat(0);
+  setxtitle(_mainxaxis);
+  setytitle(_mainyaxis);
+  stylemainaxis(_mainxaxis);
+  stylemainaxis(_mainyaxis);
   // Pull frame style
   if(_usepull)
   {
     // Get rid of the stuff under the main plot
-    _mainplot->SetLabelSize(0,"x");
-    // Style the pull plot
-    styleframe(_pullplot);
-    // Make symmetric around zero
-    double max = _pullplot->GetMaximum();
-    double min = _pullplot->GetMinimum()*-1;
-    double newmax;
-    if(max>min)
-    {
-      newmax = 1.2*(1+(int)max);
-    }
-    else
-    {
-      newmax = 1.2*(1+(int)min);
-    }
-    _pullplot->SetMaximum(newmax);
-    _pullplot->SetMinimum(-newmax);
-    // Axis titles
-    _pullplot->SetYTitle("Pull");
-    _pullplot->SetTitleOffset(1.20,"x");
-    _pullplot->SetTitleOffset(0.40,"y");
-    _pullplot->SetTitleSize  (0.17,"x");
-    _pullplot->SetTitleSize  (0.17,"y");
-    // Axis labels
-    _pullplot->SetLabelSize  (0.15,"x");
-    _pullplot->SetLabelSize  (0.10,"y");
-    // Ticks
-    _pullplot->SetTickLength(0.1,"x");
-    _pullplot->SetNdivisions(5,"y");
+    _mainxaxis->SetLabelSize(0);
+    stylepullaxes(_pullxaxis,_pullyaxis);
+    makesymmetric(_pullplot);
     // Finish
     _pullpad->cd();
     _pullplot->Draw();
@@ -188,15 +212,8 @@ TCanvas* plotmaker::Draw(bool logy)
   _mainpad->cd();
   if(logy) _mainpad->SetLogy();
   _mainplot->Draw();
-  // Blurb
-  _blurb = new TLatex(_blurbx,_blurby,_blurbtext.c_str());
-  _blurb->SetTextFont(132);
-  _blurb->SetTextColor(1);
-  _blurb->SetNDC(kTRUE);
-  _blurb->SetTextAlign(11);
-  _blurb->SetTextSize(0.07);
   _mainpad->cd();
-  _blurb->Draw();
+  drawblurb();
   return _canvas;
 }
 /*****************************************************************************/
