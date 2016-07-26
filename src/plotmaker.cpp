@@ -183,11 +183,10 @@ void plotmaker::setxtitle(TAxis* axis)
     axis->SetTitle(("#font[132]{}"+_xtitle+" #font[132]{}["+_unit+"]").c_str());
   }
 }
-void plotmaker::setytitle(TAxis* axis)
+void plotmaker::setytitle(TAxis* axis,double binw)
 {
   axis->CenterTitle();
   stringstream ytitle;
-  double binw = axis->GetBinWidth(1);
   ytitle << "#font[132]{}Candidates / (";
   if(binw > 10)
     ytitle << TMath::Nint(binw);
@@ -259,7 +258,7 @@ TCanvas* plotmaker::Draw(bool logy)
 {
   gStyle->SetOptStat(0);
   setxtitle(_mainxaxis);
-  setytitle(_mainyaxis);
+  setytitle(_mainyaxis,_mainxaxis->GetBinWidth(1));
   stylemainaxis(_mainxaxis);
   stylemainaxis(_mainyaxis);
   // Pull frame style

@@ -42,7 +42,7 @@ class plotmaker
     bool     _usepull;
     // Apply LHCb paper style to plot
     void     setxtitle(TAxis*);
-    void     setytitle(TAxis*);
+    void     setytitle(TAxis*,double);
     void     stylemainaxis(TAxis*);
     void     stylepullaxes(TAxis*,TAxis*);
     void     drawplot(void*,int);
