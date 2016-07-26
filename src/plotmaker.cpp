@@ -15,6 +15,7 @@ plotmaker::plotmaker(RooPlot* mainplot) :
   _mainplot(mainplot)
 {
   _mainclass = rooplot;
+  mainplot->SetTitle("");
   _usepull = false;
   getaxes(mainplot,false);
   init();
@@ -23,6 +24,7 @@ plotmaker::plotmaker(TGraph* mainplot) :
   _mainplot(mainplot)
 {
   _mainclass = tgraph;
+  mainplot->SetTitle("");
   _usepull = false;
   getaxes(mainplot,false);
   init();
@@ -31,6 +33,7 @@ plotmaker::plotmaker(TH1* mainplot) :
   _mainplot(mainplot)
 {
   _mainclass = th1;
+  mainplot->SetTitle("");
   _usepull = false;
   getaxes(mainplot,false);
   init();
@@ -38,16 +41,16 @@ plotmaker::plotmaker(TH1* mainplot) :
 // Make sure to delete all the "new" objects
 plotmaker::~plotmaker()
 {
-  delete _canvas;
+  if(_blurb != NULL)
+  {
+    delete _blurb;
+  }
   delete _mainpad;
   if(_usepull)
   {
     delete _pullpad;
   }
-  if(_blurb != NULL)
-  {
-    delete _blurb;
-  }
+  delete _canvas;
 }
 /*****************************************************************************/
 // Set default values for variables and set things up for drawing.
@@ -112,15 +115,40 @@ void plotmaker::SetBlurbPosition(double x, double y)
 /*****************************************************************************/
 void plotmaker::SetPullPlot(RooPlot* pullplot)
 {
+  pullplot->SetTitle("");
   _pullplot = pullplot;
   _pullclass = rooplot;
   getaxes(pullplot,true);
   _usepull = true;
   // Remove pull plot errors
-  for(int i = 0; i < pullplot->getHist()->GetN(); i++)
-  {
-    pullplot->getHist()->SetPointError(i,0,0,0,0);
-  }
+//  for(int i = 0; i < pullplot->getHist()->GetN(); i++)
+//  {
+//    pullplot->getHist()->SetPointError(i,0,0,0,0);
+//  }
+  pullplot->getHist()->SetDrawOption("BX");
+  makesymmetric(pullplot);
+  makepads();
+}
+void plotmaker::SetPullPlot(TGraph* pullplot)
+{
+  pullplot->SetTitle("");
+  _pullplot = pullplot;
+  _pullclass = tgraph;
+  getaxes(pullplot,true);
+  _usepull = true;
+  // Remove pull plot errors
+  pullplot->SetDrawOption("BX");
+  makesymmetric(pullplot);
+  makepads();
+}
+void plotmaker::SetPullPlot(TH1* pullplot)
+{
+  pullplot->SetTitle("");
+  _pullplot = pullplot;
+  _pullclass = th1;
+  getaxes(pullplot,true);
+  _usepull = true;
+  pullplot->SetDrawOption("B");
   makesymmetric(pullplot);
   makepads();
 }
@@ -216,13 +244,13 @@ void plotmaker::drawplot(void* plot, int plotclass)
   switch(plotclass)
   {
     case rooplot:
-      ((RooPlot*)plot)->Draw();
+      static_cast<RooPlot*>(plot)->Draw();
       break;
     case tgraph:
-      ((TGraph*)plot)->Draw();
+      static_cast<TGraph*>(plot)->Draw();
       break;
     case th1:
-      ((TH1*)plot)->Draw();
+      static_cast<TH1*>(plot)->Draw();
       break;
   }
 }
