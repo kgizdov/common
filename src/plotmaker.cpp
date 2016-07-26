@@ -10,25 +10,29 @@
 #include <algorithm>
 using namespace std;
 /*****************************************************************************/
-// Constructor without pull plot
+// Constructor
 plotmaker::plotmaker(RooPlot* mainplot) :
   _mainplot(mainplot)
 {
-  _mainxaxis = mainplot->GetXaxis();
-  _mainyaxis = mainplot->GetYaxis();
+  _mainclass = rooplot;
   _usepull = false;
+  getaxes(mainplot,false);
   init();
 }
-// Constructor with pull plot
-plotmaker::plotmaker(RooPlot* mainplot, RooPlot* pullplot) :
-  _mainplot(mainplot),
-  _pullplot(pullplot)
+plotmaker::plotmaker(TGraph* mainplot) :
+  _mainplot(mainplot)
 {
-  _mainxaxis = mainplot->GetXaxis();
-  _mainyaxis = mainplot->GetYaxis();
-  _pullxaxis = pullplot->GetXaxis();
-  _pullyaxis = pullplot->GetYaxis();
-  _usepull = true;
+  _mainclass = tgraph;
+  _usepull = false;
+  getaxes(mainplot,false);
+  init();
+}
+plotmaker::plotmaker(TH1* mainplot) :
+  _mainplot(mainplot)
+{
+  _mainclass = th1;
+  _usepull = false;
+  getaxes(mainplot,false);
   init();
 }
 // Make sure to delete all the "new" objects
@@ -56,6 +60,19 @@ void plotmaker::init()
   _unit          = "MeV/#it{c}^{2}";
   _dimensionless = false;
   makepads();
+}
+template<class T> void plotmaker::getaxes(T* plot, bool pull)
+{
+  if(pull)
+  {
+    _pullxaxis = plot->GetXaxis();
+    _pullyaxis = plot->GetYaxis();
+  }
+  else
+  {
+    _mainxaxis = plot->GetXaxis();
+    _mainyaxis = plot->GetYaxis();
+  }
 }
 void plotmaker::makepads()
 {
@@ -87,7 +104,7 @@ void plotmaker::SetBlurb(string text)
 {
   _blurbtext = text;
 }
-void plotmaker::SetBlurbPosition(float x, float y)
+void plotmaker::SetBlurbPosition(double x, double y)
 {
   _blurbx = x;
   _blurby = y;
@@ -96,12 +113,15 @@ void plotmaker::SetBlurbPosition(float x, float y)
 void plotmaker::SetPullPlot(RooPlot* pullplot)
 {
   _pullplot = pullplot;
+  _pullclass = rooplot;
+  getaxes(pullplot,true);
   _usepull = true;
   // Remove pull plot errors
-  for(int i = 0; i < _pullplot->getHist()->GetN(); i++)
+  for(int i = 0; i < pullplot->getHist()->GetN(); i++)
   {
-    _pullplot->getHist()->SetPointError(i,0,0,0,0);
+    pullplot->getHist()->SetPointError(i,0,0,0,0);
   }
+  makesymmetric(pullplot);
   makepads();
 }
 /*****************************************************************************/
@@ -160,6 +180,7 @@ void plotmaker::stylepullaxes(TAxis* xaxis, TAxis* yaxis)
   stylemainaxis(yaxis);
   // Axis titles
   yaxis->SetTitle("Pull");
+  yaxis->CenterTitle();
   xaxis->SetTitleOffset(1.20);
   yaxis->SetTitleOffset(0.40);
   xaxis->SetTitleSize  (0.17);
@@ -190,6 +211,21 @@ template<class T> void plotmaker::makesymmetric(T* plot)
   plot->SetMaximum(newmax);
   plot->SetMinimum(-newmax);
 }
+void plotmaker::drawplot(void* plot, int plotclass)
+{
+  switch(plotclass)
+  {
+    case rooplot:
+      ((RooPlot*)plot)->Draw();
+      break;
+    case tgraph:
+      ((TGraph*)plot)->Draw();
+      break;
+    case th1:
+      ((TH1*)plot)->Draw();
+      break;
+  }
+}
 /*****************************************************************************/
 TCanvas* plotmaker::Draw(bool logy)
 {
@@ -204,14 +240,13 @@ TCanvas* plotmaker::Draw(bool logy)
     // Get rid of the stuff under the main plot
     _mainxaxis->SetLabelSize(0);
     stylepullaxes(_pullxaxis,_pullyaxis);
-    makesymmetric(_pullplot);
     // Finish
     _pullpad->cd();
-    _pullplot->Draw();
+    drawplot(_pullplot,_pullclass);
   }
   _mainpad->cd();
   if(logy) _mainpad->SetLogy();
-  _mainplot->Draw();
+  drawplot(_mainplot,_mainclass);
   _mainpad->cd();
   drawblurb();
   return _canvas;

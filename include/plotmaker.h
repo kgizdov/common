@@ -11,20 +11,24 @@ using namespace std;
 class plotmaker
 {
   private:
+    enum PlotClass {rooplot, tgraph, th1};
+    PlotClass _mainclass;
+    PlotClass _pullclass;
     void     init();
+    template<class T> void getaxes(T*, bool);
     void     makepads();
     // The blurb
     TLatex*  _blurb;
     string   _blurbtext;
-    float    _blurbx;
-    float    _blurby;
+    double   _blurbx;
+    double   _blurby;
     // Objects to draw on
     TCanvas* _canvas;
     TPad*    _mainpad;
     TPad*    _pullpad;
     // The plots
-    RooPlot* _mainplot;
-    RooPlot* _pullplot;
+    void*    _mainplot;
+    void*    _pullplot;
     // The Axes
     TAxis*   _mainxaxis;
     TAxis*   _mainyaxis;
@@ -36,26 +40,28 @@ class plotmaker
     bool     _dimensionless;
     // Keep track whether or not a pull plot has been given
     bool     _usepull;
-    // Style options common to main and pull plots
-    void     styleframe(RooPlot*);
-    void     styleframe(TH1*);
+    // Apply LHCb paper style to plot
     void     setxtitle(TAxis*);
     void     setytitle(TAxis*);
     void     stylemainaxis(TAxis*);
     void     stylepullaxes(TAxis*,TAxis*);
+    void     drawplot(void*,int);
     void     drawblurb();
     template<class T> void makesymmetric(T*);
   public:
     // Constructors
     plotmaker(RooPlot*);
-    plotmaker(RooPlot*,RooPlot*);
+    plotmaker(TH1*);
+    plotmaker(TGraph*);
     ~plotmaker();
     // Get and set variables
     TCanvas* GetCanvas() {return _canvas;}
     string   GetBlurb()  {return _blurbtext ;}
     void     SetBlurb(string);
-    void     SetBlurbPosition(float,float);
+    void     SetBlurbPosition(double,double);
     void     SetPullPlot(RooPlot*);
+    void     SetPullPlot(TH1*);
+    void     SetPullPlot(TGraph*);
     void     SetTitle(string,string);
     // Do stuff
     TCanvas* Draw(bool logy = false);
