@@ -38,6 +38,7 @@ class plotmaker
     string   _xtitle;
     string   _unit;
     bool     _dimensionless;
+    bool     _logy;
     // Keep track whether or not a pull plot has been given
     bool     _usepull;
     // Apply LHCb paper style to plot
@@ -45,7 +46,7 @@ class plotmaker
     void     setytitle(TAxis*,double);
     void     stylemainaxis(TAxis*);
     void     stylepullaxes(TAxis*,TAxis*);
-    void     drawplot(void*,int);
+    void     drawplot(void*,int,string);
     void     drawblurb();
     template<class T> void makesymmetric(T*);
   public:
@@ -55,8 +56,9 @@ class plotmaker
     plotmaker(TGraph*);
     ~plotmaker();
     // Get and set variables
-    TCanvas* GetCanvas() {return _canvas;}
-    string   GetBlurb()  {return _blurbtext ;}
+    TCanvas* GetCanvas() { return _canvas; }
+    string   GetBlurb()  { return _blurbtext; }
+    void     SetLogy(bool logy = true) { _logy = logy; }
     void     SetBlurb(string);
     void     SetBlurbPosition(double,double);
     void     SetPullPlot(RooPlot*);
@@ -64,6 +66,6 @@ class plotmaker
     void     SetPullPlot(TGraph*);
     void     SetTitle(string,string);
     // Do stuff
-    TCanvas* Draw(bool logy = false);
+    TCanvas* Draw(string option = "");
 };
 #endif

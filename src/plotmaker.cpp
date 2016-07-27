@@ -62,6 +62,7 @@ void plotmaker::init()
   _xtitle        = "#it{m}(#it{K^{#plus}K^{#minus}K^{#plus}K^{#minus}})";
   _unit          = "MeV/#it{c}^{2}";
   _dimensionless = false;
+  _logy          = false;
   makepads();
 }
 template<class T> void plotmaker::getaxes(T* plot, bool pull)
@@ -238,23 +239,23 @@ template<class T> void plotmaker::makesymmetric(T* plot)
   plot->SetMaximum(newmax);
   plot->SetMinimum(-newmax);
 }
-void plotmaker::drawplot(void* plot, int plotclass)
+void plotmaker::drawplot(void* plot, int plotclass, string option)
 {
   switch(plotclass)
   {
     case rooplot:
-      static_cast<RooPlot*>(plot)->Draw();
+      static_cast<RooPlot*>(plot)->Draw(option.c_str());
       break;
     case tgraph:
-      static_cast<TGraph*>(plot)->Draw();
+      static_cast<TGraph*>(plot)->Draw(option.c_str());
       break;
     case th1:
-      static_cast<TH1*>(plot)->Draw();
+      static_cast<TH1*>(plot)->Draw(option.c_str());
       break;
   }
 }
 /*****************************************************************************/
-TCanvas* plotmaker::Draw(bool logy)
+TCanvas* plotmaker::Draw(string option)
 {
   gStyle->SetOptStat(0);
   setxtitle(_mainxaxis);
@@ -269,11 +270,11 @@ TCanvas* plotmaker::Draw(bool logy)
     stylepullaxes(_pullxaxis,_pullyaxis);
     // Finish
     _pullpad->cd();
-    drawplot(_pullplot,_pullclass);
+    drawplot(_pullplot,_pullclass,option);
   }
   _mainpad->cd();
-  if(logy) _mainpad->SetLogy();
-  drawplot(_mainplot,_mainclass);
+  if(_logy) _mainpad->SetLogy();
+  drawplot(_mainplot,_mainclass,option);
   _mainpad->cd();
   drawblurb();
   return _canvas;
