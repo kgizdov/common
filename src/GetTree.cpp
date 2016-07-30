@@ -112,6 +112,6 @@ TTree* GetTree(TFile* file, TCut* cut)
 	else
 	{
 		return tree;
- }
+	}
 }
 
