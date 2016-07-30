@@ -61,8 +61,11 @@ TTree* GetTree(TFile* file, TCut* cut)
     TKey* key;
     TDirectoryFile* directory;
     // Look for any tree or directory in the file
+    int object_counter = 0;
     while((key = (TKey*)next()))
     {
+      object_counter++;
+      cout << "Object #" << object_counter << " is a " << key->GetClassName() << endl;
       if(strcmp(key->GetClassName(),"TTree")==0)
       {
         // OK, great, you've found a tree. Let's go.
@@ -79,13 +82,21 @@ TTree* GetTree(TFile* file, TCut* cut)
         // Look for any tree in the directory.
         while((dirkey = (TKey*)dirnext()))
         {
+          object_counter++;
+          cout << "Object #" << object_counter << " in the directory " << key->GetName() << " is a " << dirkey->GetClassName() << endl;
           // Found a tree in a first-level directory.
-          tree = (TTree*)key->ReadObj();
+          if(strcmp(dirkey->GetClassName(),"TTree")==0)
+          {
+            // OK, great, you've found a tree. Let's go.
+            tree = (TTree*)dirkey->ReadObj();
+            break;
+          }
         }
       }
       if(tree != NULL) break;
     }
-    if(tree == NULL) throw runtime_error("Couldn't find tree.");
+    cout << "I looked at " << object_counter << " objects" << endl;
+    if(tree == NULL) throw runtime_error("Couldn't find tree");
   }
   cout << "Tree found with name " << tree->GetName() << endl;
   if(!((string)cut->GetTitle()).empty())
