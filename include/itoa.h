@@ -6,8 +6,8 @@ using namespace std;
 // Convert integer to string.
 string itoa(int value)
 {
-  stringstream temp;
-  temp << value;
-  return temp.str();
+	stringstream temp;
+	temp << value;
+	return temp.str();
 }
 #endif

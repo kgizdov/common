@@ -6,14 +6,14 @@ using namespace std;
 class CloneTagger
 {
 private:
-  vector<CloneInfo>& clones;
+	vector<CloneInfo>& clones;
 public:
-  CloneTagger(vector<CloneInfo>&);
-  CloneTagger();
-  ~CloneTagger();
-  void tagClone(CloneInfo&, CloneInfo&);
-  void tagClones();
-  void sortClones();
-  void addToClones(int, int, int, int, int );
+	CloneTagger(vector<CloneInfo>&);
+	CloneTagger();
+	~CloneTagger();
+	void tagClone(CloneInfo&, CloneInfo&);
+	void tagClones();
+	void sortClones();
+	void addToClones(int, int, int, int, int );
 };
 #endif
