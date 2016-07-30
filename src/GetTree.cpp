@@ -43,9 +43,9 @@ TTree* GetTree(TFile* file, TCut* cut)
 	TTree* tree;
 	// This list can be freely extended without having to alter any other lines
 	vector<string> treenames = {"DecayTreeTuple/DecayTree"
-	                          ,"DecayTree"
-	                          ,"MCDecayTreeTuple/MCDecayTree"
-	                          ,"MCDecayTree"};
+	                           ,"DecayTree"
+	                           ,"MCDecayTreeTuple/MCDecayTree"
+	                           ,"MCDecayTree"};
 	bool planB = false;
 	for(auto name: treenames) // C++11 magic
 	{
