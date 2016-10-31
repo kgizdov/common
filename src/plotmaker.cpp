@@ -104,6 +104,11 @@ void plotmaker::makepads()
 	}
 }
 /*****************************************************************************/
+void plotmaker::SetDrawOption(string drawopt)
+{
+	_drawopt = drawopt;
+}
+/*****************************************************************************/
 void plotmaker::SetBlurb(string text)
 {
 	_blurbtext = text;
@@ -257,6 +262,7 @@ void plotmaker::drawplot(void* plot, int plotclass, string option)
 /*****************************************************************************/
 TCanvas* plotmaker::Draw(string option)
 {
+	if(option != "") SetDrawOption(option);
 	gStyle->SetOptStat(0);
 	setxtitle(_mainxaxis);
 	setytitle(_mainyaxis,_mainxaxis->GetBinWidth(1));
@@ -270,11 +276,11 @@ TCanvas* plotmaker::Draw(string option)
 		stylepullaxes(_pullxaxis,_pullyaxis);
 		// Finish
 		_pullpad->cd();
-		drawplot(_pullplot,_pullclass,option);
+		drawplot(_pullplot,_pullclass,_drawopt);
 	}
 	_mainpad->cd();
 	if(_logy) _mainpad->SetLogy();
-	drawplot(_mainplot,_mainclass,option);
+	drawplot(_mainplot,_mainclass,_drawopt);
 	_mainpad->cd();
 	drawblurb();
 	return _canvas;

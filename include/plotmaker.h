@@ -39,6 +39,7 @@ class plotmaker
 		string	 _unit;
 		bool		 _dimensionless;
 		bool		 _logy;
+		string   _drawopt;
 		// Keep track whether or not a pull plot has been given
 		bool		 _usepull;
 		// Apply LHCb paper style to plot
@@ -59,6 +60,7 @@ class plotmaker
 		TCanvas* GetCanvas() { return _canvas; }
 		string	 GetBlurb()	 { return _blurbtext; }
 		void		 SetLogy(bool logy = true) { _logy = logy; }
+		void     SetDrawOption(string);
 		void		 SetBlurb(string);
 		void		 SetBlurbPosition(double,double);
 		void		 SetPullPlot(RooPlot*);
