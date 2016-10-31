@@ -1,24 +1,17 @@
 #include "CloneInfo.h"
 using namespace std;
-CloneInfo::CloneInfo(int i_key1, int i_key2, int i_key3, int i_key4, int i_i) :
-	m_key1(i_key1),
-	m_key2(i_key2),
-	m_key3(i_key3),
-	m_key4(i_key4),
-	m_i(i_i),
+CloneInfo::CloneInfo(vector<int> _keys, int _i, double _q) :
+	m_keys(_keys),
+	m_i(_i),
+	m_q(_q),
 	m_isAlive(true)
 {
 }
 CloneInfo::CloneInfo(const CloneInfo& cl) :
-	m_key1(cl.m_key1),
-	m_key2(cl.m_key2),
-	m_key3(cl.m_key3),
-	m_key4(cl.m_key4),
+	m_keys(cl.m_keys),
 	m_i(cl.m_i),
+	m_q(cl.m_q),
 	m_isAlive(cl.m_isAlive)
-{
-}
-CloneInfo::CloneInfo()
 {
 }
 CloneInfo::~CloneInfo()
@@ -30,33 +23,63 @@ bool CloneInfo::isAlive()
 }
 int CloneInfo::i() const
 {
-	return m_i; 
+	return m_i;
+}
+double CloneInfo::q() const
+{
+	return m_q;
 }
 void CloneInfo::setDead()
 {
 	m_isAlive = false;
 }
-int CloneInfo::key1()
+int CloneInfo::GetKey(int i) const
 {
-	return m_key1;
+	return m_keys[i];
 }
-int CloneInfo::key2()
+bool CloneInfo::operator== (const CloneInfo& c2) const
 {
-	return m_key2;
+	return *this % c2 == m_keys.size();
 }
-int CloneInfo::key3()
+bool CloneInfo::operator>  (const CloneInfo& c2) const
 {
-	return m_key3;
+	return m_q>c2.m_q;
 }
-int CloneInfo::key4()
+bool CloneInfo::operator>= (const CloneInfo& c2) const
 {
-	return m_key4;
+	return m_q>=c2.m_q;
 }
-int CloneInfo::sum() const
+bool CloneInfo::operator<  (const CloneInfo& c2) const
 {
-	return m_key1 + m_key2 + m_key3 + m_key4;
-} 
-bool CloneInfo::Less_by_sum::operator() (const CloneInfo& c1, const CloneInfo& c2) const
-{
-	return c1.sum() < c2.sum();
+	return m_q<c2.m_q;
 }
+bool CloneInfo::operator<= (const CloneInfo& c2) const
+{
+	return m_q<=c2.m_q;
+}
+unsigned CloneInfo::operator%  (const CloneInfo& c2) const
+{
+	unsigned n = 0;
+	for(auto key : m_keys)
+	{
+		for(auto key2 : c2.m_keys)
+		{
+			if(key == key2)
+			{
+				n++;
+				break;
+			}
+		}
+	}
+	// Return number that are same
+	return n;
+}
+bool CloneInfo::ascending::operator() (const CloneInfo& c1, const CloneInfo& c2) const
+{
+	return c1 < c2;
+}
+bool CloneInfo::descending::operator() (const CloneInfo& c1, const CloneInfo& c2) const
+{
+	return c1 > c2;
+}
+

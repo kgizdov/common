@@ -10,7 +10,7 @@ CloneTagger::~CloneTagger()
 }
 void CloneTagger::tagClone(CloneInfo& c1, CloneInfo& c2)
 {
-	if (c1.sum() == c2.sum())
+	if (c1 % c2 != 0)
 	{
 		c2.setDead();
 	}
@@ -18,27 +18,31 @@ void CloneTagger::tagClone(CloneInfo& c1, CloneInfo& c2)
 void CloneTagger::tagClones()
 {
 	vector<CloneInfo>::iterator iter = clones.begin();
-	for (;iter != clones.end(); ++iter)
+	for(;iter != clones.end(); ++iter)
 	{
-		if (iter->isAlive() == true)
+		if(iter->isAlive())
 		{
-		vector<CloneInfo>::iterator iter2 = iter; ++iter2;
-			for (;iter2 != clones.end(); ++iter2)
+		vector<CloneInfo>::iterator iter2 = iter+1;
+			for(;iter2 != clones.end(); ++iter2)
 			{
-				if (iter2->sum() == iter->sum())
-				{
-					iter2->setDead();
-				}
+				tagClone(*iter, *iter2);
 			}
 		}
 	}
 }
-void CloneTagger::sortClones()
+void CloneTagger::sortClones(bool asc)
 {
-	sort(clones.begin(), clones.end(), CloneInfo::Less_by_sum());
+	if(asc)
+		sort(clones.begin(), clones.end(), CloneInfo::ascending());
+	else
+		sort(clones.begin(), clones.end(), CloneInfo::descending());
 }
-void CloneTagger::addToClones(int key1, int key2, int key3, int key4, int i )
+void CloneTagger::addToClones(vector<int> keys, int i, double q)
 {
-	CloneInfo tclone = CloneInfo(key1, key2, key3, key4,	i);
+	CloneInfo tclone = CloneInfo(keys, i, q);
+	addToClones(tclone);
+}
+void CloneTagger::addToClones(CloneInfo& tclone)
+{
 	clones.push_back(tclone);
 }

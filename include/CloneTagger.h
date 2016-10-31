@@ -13,7 +13,8 @@ public:
 	~CloneTagger();
 	void tagClone(CloneInfo&, CloneInfo&);
 	void tagClones();
-	void sortClones();
-	void addToClones(int, int, int, int, int );
+	void sortClones(bool asc = true);
+	void addToClones(vector<int>, int, double);
+	void addToClones(CloneInfo&);
 };
 #endif
