@@ -25,7 +25,7 @@ NDHist_Adaptive::NDHist_Adaptive(TFile* _f)
       Initialise();
     }
   }
-  if(binner == (TKDTreeID*)0x0)
+  if(binner == NULL)
     throw std::runtime_error("Couldn't find a TKDTree object in the file");
 }
 NDHist_Adaptive::NDHist_Adaptive(const NDHist_Adaptive& orig)
