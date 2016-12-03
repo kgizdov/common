@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <assert.h>
 #include <iostream>
-using namespace std;
 void NDHist::Initialise()
 {
 	for(int ibin = nbins; ibin-->0;)
@@ -57,7 +56,11 @@ double NDHist::MinBinContent()
 }
 TH1D* NDHist::BinContentHist()
 {
-	TH1D* hist = new TH1D("BinContentHist","",100,MinBinContent(),MaxBinContent());
+	return BinContentHist("BinContentHist");
+}
+TH1D* NDHist::BinContentHist(std::string name)
+{
+	TH1D* hist = new TH1D(name.c_str(),"",100,MinBinContent(),MaxBinContent());
 	for(auto binc: bincontent)
 		hist->Fill(binc);
 	return hist;
@@ -87,7 +90,7 @@ bool NDHist::IsCompatible(const NDHist& other)
 bool NDHist::Arithmetic(const NDHist& other,int op)
 {
 	if(!IsCompatible(other))
-		throw runtime_error("NDHist ERROR: Histograms must have the same ranges and binning schemes to do arithmetic.");
+		throw std::runtime_error("NDHist ERROR: Histograms must have the same ranges and binning schemes to do arithmetic.");
 	switch(op)
 	{
 		case 0:

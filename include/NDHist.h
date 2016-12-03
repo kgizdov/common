@@ -1,6 +1,7 @@
 #ifndef __NDHist_h__
 #define __NDHist_h__
 #include <vector>
+#include <string>
 #include "TH1D.h"
 class NDHist
 {
@@ -16,6 +17,7 @@ class NDHist
 		double OverFlow() { return over; }
 		double Integral();
 		TH1D* BinContentHist();
+		TH1D* BinContentHist(std::string);
 		bool Add(const NDHist&);
 		bool Subtract(const NDHist&);
 		bool Multiply(const NDHist&);
