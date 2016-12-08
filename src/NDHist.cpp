@@ -136,5 +136,5 @@ double NDHist::Integral()
 }
 bool NDHist::CheckDim(unsigned ndims)
 {
-	return true;
+	return ndims == 0;
 }

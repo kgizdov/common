@@ -1,5 +1,6 @@
 #include "NDHist_Fixed.h"
 #include "itoa.h"
+#include <iostream>
 #include <stdexcept>
 #include <assert.h>
 NDHist_Fixed::NDHist_Fixed(std::vector<std::tuple<int,double,double>> params)
@@ -45,6 +46,8 @@ void NDHist_Fixed::Initialise(std::vector<int> nbins_axes)
 // Copy constructor
 NDHist_Fixed::NDHist_Fixed(const NDHist_Fixed& orig)
 {
+	under = orig.under;
+	over = orig.over;
 	axes = orig.axes;
 	nbins = orig.nbins;
 	bincontent = orig.bincontent;
@@ -68,14 +71,15 @@ void NDHist_Fixed::SetAxisTitles(std::vector<std::string> titles)
 // Find a bin
 int NDHist_Fixed::FindBin(std::vector<double> x)
 {
-	if(!CheckDim(x.size()))
-		throw std::runtime_error("NDHist ERROR: Datapoint has the wrong dimension.");
 	std::vector<int> binx;
-	for(unsigned idim = axes.size(); idim-->0;)
+	for(auto& axis : axes)
 	{
-		binx.push_back(axes[idim].FindBin(x[idim])-1);
-		if(binx[idim] == -1 || binx[idim] >= axes[idim].GetNbins())
-			return -1;
+		int bin = axis.FindBin(x[&axis - &axes[0]]) - 1;
+		binx.push_back(bin);
+		if(bin < 0)
+			return -1; // underflow
+		else if(bin >= axis.GetNbins())
+			return nbins; // overflow
 	}
 	return GetBin(binx);
 }
@@ -85,8 +89,8 @@ int NDHist_Fixed::GetBin(std::vector<int> binx)
 //	return binw + waxis.GetNbins() * (binx + xaxis.GetNbins() * (biny + yaxis.GetNbins() * (binz)));
 	if(!CheckDim(binx.size()))
 		throw std::runtime_error("NDHist_Fixed ERROR: Number of bin indices does not match number of axes.");
-	int bin = binx.back();
-	for(unsigned idim = axes.size()-1; idim-->0;)
+	int bin = binx.back(); // Start with the nth dimension
+	for(unsigned idim = axes.size()-1; idim-->0;) // Loop from (n-1)th dimension to first
 		bin = binx[idim] + axes[idim].GetNbins() * bin;
 	return bin;
 }

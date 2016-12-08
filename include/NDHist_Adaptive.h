@@ -15,8 +15,11 @@ class NDHist_Adaptive : public NDHist
 		bool IsCompatible(const NDHist_Adaptive&);
 		TTree* SaveToTree();
 		void LoadFromTree(TTree*);
+		void SetDimScales(std::vector<double>);
+		std::vector<double> GetDimScales() { return dimscale; }
 	protected:
 		TKDTreeID* binner;
+		std::vector<double> dimscale;
 	private:
 		void Initialise();
 		int FindBin(std::vector<double>);
