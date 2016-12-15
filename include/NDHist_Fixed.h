@@ -1,10 +1,13 @@
 #ifndef __NDHist_Fixed_h__
 #define __NDHist_Fixed_h__
-#include "TAxis.h"
-#include "TH2D.h"
+// Self
 #include "NDHist.h"
+// std
 #include <tuple>
 #include <string>
+// ROOT
+#include "TAxis.h"
+#include "TH2D.h"
 class NDHist_Fixed : public NDHist
 {
 	public:
@@ -19,10 +22,12 @@ class NDHist_Fixed : public NDHist
 	protected:
 		std::vector<TAxis> axes;
 	private:
+		void BuildSpline();
+		void IterativeAddSample(int, std::vector<int>&, std::vector<double>&, SPLINTER::DataTable&);
 		void Initialise(std::vector<int>);
 		int FindBin(std::vector<double>);
 		int GetBin(std::vector<int>);
-		bool CheckDim(unsigned idim) { return idim == axes.size(); }
+		int nDims() { return axes.size(); }
 };
 NDHist_Fixed operator+ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs += rhs; return lhs; }
 NDHist_Fixed operator- (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs -= rhs; return lhs; }

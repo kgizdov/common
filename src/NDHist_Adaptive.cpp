@@ -1,8 +1,11 @@
+// Self
 #include "NDHist_Adaptive.h"
-#include "TCollection.h"
-#include "TKey.h"
+// std
 #include <stdexcept>
 #include <iostream>
+// ROOT
+#include "TCollection.h"
+#include "TKey.h"
 NDHist_Adaptive::NDHist_Adaptive(TKDTreeBinning* _b) : binner(_b->GetTree())
 {
 	Initialise();
@@ -54,6 +57,20 @@ int NDHist_Adaptive::FindBin(std::vector<double> x)
 		x[idim] *= dimscale[idim];
 	return binner->FindNode(&x[0]) - binner->GetNNodes();
 }
+void NDHist_Adaptive::BuildSpline()
+{
+	// Build a DataTable containing all the bin centres
+	SPLINTER::DataTable samples;
+	for(int ibin = nbins; ibin-->0;)
+	{
+		double* point;
+		int iter(0);
+		binner->FindPoint(point, ibin, iter);
+		samples.addSample(std::vector<double>(point,point+nDims()),bincontent[ibin]);
+	}
+	// Build a cubic spline
+	spline = new SPLINTER::BSpline(SPLINTER::BSpline::Builder(samples).degree(3).build());
+}
 bool NDHist_Adaptive::IsCompatible(const NDHist_Adaptive& other)
 {
 	return binner == other.binner && nbins == other.nbins;
@@ -83,7 +100,7 @@ void NDHist_Adaptive::LoadFromTree(TTree* tree)
 }
 void NDHist_Adaptive::SetDimScales(std::vector<double> newscale)
 {
-	if(!this->CheckDim(newscale.size()))
+	if(!CheckDim(newscale.size()))
 		throw std::runtime_error("NDHist_Adaptive ERROR: List of scales has the wrong number of dimensions.");
 	dimscale = newscale;
 }

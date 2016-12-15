@@ -1,4 +1,6 @@
+// Self
 #include "NDHist.h"
+// std
 #include <stdexcept>
 #include <assert.h>
 #include <iostream>
@@ -10,16 +12,20 @@ void NDHist::Initialise()
 // Destructor
 NDHist::~NDHist()
 {
+	if(spline!=NULL) delete spline;
 }
-int NDHist::FindBin(std::vector<double> x)
+std::vector<double> NDHist::GetBinCentre(int ibin)
 {
-	return 0; // should be overwritten in the child classes
+	std::vector<double> centre;
+	while(!CheckDim(centre.size()))
+		centre.push_back(0);
+	return centre;
 }
 void NDHist::Fill(std::vector<double> x)
 {
-	if(!this->CheckDim(x.size()))
+	if(!CheckDim(x.size()))
 		throw std::runtime_error("NDHist ERROR: Datapoint has the wrong dimension.");
-	int bin = this->FindBin(x); // make sure you get the function from the right class
+	int bin = FindBin(x);
 	if(bin < 0)
 		under++;
 	else if(bin >= nbins)
@@ -27,36 +33,20 @@ void NDHist::Fill(std::vector<double> x)
 	else
 		bincontent[bin]++;
 }
-double NDHist::Eval(std::vector<double> x)
+double NDHist::Interpolate(std::vector<double> x)
 {
-	return bincontent[FindBin(x)];
+	if(!CheckDim(x.size()))
+		throw std::runtime_error("NDHist ERROR: Datapoint has the wrong dimension.");
+	if(spline == NULL) BuildSpline();
+	return spline->eval(x);
 }
 void NDHist::Clear()
 {
+	// Set the content of all bins to zero
 	for(auto &binc: bincontent)
 		binc = 0;
 	under = 0;
 	over = 0;
-}
-double NDHist::MaxBinContent()
-{
-	double maxbincontent = bincontent[0];
-	for(auto binc: bincontent)
-		if(binc > maxbincontent)
-			maxbincontent = binc;
-	return maxbincontent;
-}
-double NDHist::MinBinContent()
-{
-	double minbincontent = bincontent[0];
-	for(auto binc: bincontent)
-		if(binc < minbincontent)
-			minbincontent = binc;
-	return minbincontent;
-}
-TH1D* NDHist::BinContentHist()
-{
-	return BinContentHist("BinContentHist");
 }
 TH1D* NDHist::BinContentHist(std::string name)
 {
@@ -64,28 +54,6 @@ TH1D* NDHist::BinContentHist(std::string name)
 	for(auto binc: bincontent)
 		hist->Fill(binc);
 	return hist;
-}
-
-// Arithmetic with histograms
-bool NDHist::Add(const NDHist& other)
-{
-	return Arithmetic(other,0);
-}
-bool NDHist::Subtract(const NDHist& other)
-{
-	return Arithmetic(other,1);
-}
-bool NDHist::Multiply(const NDHist& other)
-{
-	return Arithmetic(other,2);
-}
-bool NDHist::Divide(const NDHist& other)
-{
-	return Arithmetic(other,3);
-}
-bool NDHist::IsCompatible(const NDHist& other)
-{
-	return nbins == other.nbins;
 }
 bool NDHist::Arithmetic(const NDHist& other,int op)
 {
@@ -133,8 +101,4 @@ double NDHist::Integral()
 	for(auto binc: bincontent)
 		sum+=binc;
 	return sum;
-}
-bool NDHist::CheckDim(unsigned ndims)
-{
-	return ndims == 0;
 }

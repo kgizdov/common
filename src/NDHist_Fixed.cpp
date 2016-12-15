@@ -1,5 +1,7 @@
+// Self
 #include "NDHist_Fixed.h"
 #include "itoa.h"
+// std
 #include <iostream>
 #include <stdexcept>
 #include <assert.h>
@@ -52,6 +54,32 @@ NDHist_Fixed::NDHist_Fixed(const NDHist_Fixed& orig)
 	nbins = orig.nbins;
 	bincontent = orig.bincontent;
 }
+void NDHist_Fixed::BuildSpline()
+{
+	// Build a DataTable containing all the bin centres
+	SPLINTER::DataTable samples;
+	std::vector<int> index;
+	std::vector<double> bincentres;
+	for(auto axis: axes)
+	{
+		index.push_back(0);
+		bincentres.push_back(0);
+	}
+	IterativeAddSample(0,index,bincentres,samples);
+	// Build a cubic spline
+	spline = new SPLINTER::BSpline(SPLINTER::BSpline::Builder(samples).degree(3).build());
+}
+void NDHist_Fixed::IterativeAddSample(int dim, std::vector<int>& index, std::vector<double>& bincentres, SPLINTER::DataTable& samples)
+{
+	for(index[dim] = 0; index[dim] < axes[dim].GetNbins(); index[dim]++)
+	{
+		bincentres[index[dim]] = axes[dim].GetBinCenter(index[dim]);
+		if(dim == nDims()-1)
+			samples.addSample(bincentres,bincontent[FindBin(bincentres)]);
+		else
+			IterativeAddSample(dim+1,index,bincentres,samples);
+	}
+}
 // Names
 void NDHist_Fixed::SetAxisNames(std::vector<std::string> names)
 {
@@ -86,7 +114,6 @@ int NDHist_Fixed::FindBin(std::vector<double> x)
 // Get overall bin index from individual axis indices
 int NDHist_Fixed::GetBin(std::vector<int> binx)
 {
-//	return binw + waxis.GetNbins() * (binx + xaxis.GetNbins() * (biny + yaxis.GetNbins() * (binz)));
 	if(!CheckDim(binx.size()))
 		throw std::runtime_error("NDHist_Fixed ERROR: Number of bin indices does not match number of axes.");
 	int bin = binx.back(); // Start with the nth dimension

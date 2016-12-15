@@ -4,6 +4,8 @@ CC         = g++
 SHELL      = /bin/bash
 RM         = rm -f
 
+SPLINTERINCDIR = /usr/local/include/SPLINTER
+
 ifndef ROOTSYS
 	ROOTCFLAGS = $(shell root-config --cflags)
 	ROOTLIBS   = $(shell root-config --libs)
@@ -35,8 +37,8 @@ LIBS      := $(patsubst $(SRCDIR)/%.$(SRCEXT),$(LIBDIR)/lib%.$(LIBEXT),$(SRCS))
 OUTPUT     = $(OBJDIR)/*.$(OBJEXT) $(LIBDIR)/*.$(LIBEXT)
 
 # Compiler flags
-CXXFLAGS   = -Wall -Werror -fPIC -std=c++11 -I$(HDRDIR) $(ROOTCFLAGS)
-LIBFLAGS   = $(ROOTLIBS) $(EXTRA_ROOTLIBS)
+CXXFLAGS   = -fPIC -I$(HDRDIR) $(ROOTCFLAGS) -I$(SPLINTERINCDIR) -w
+LIBFLAGS   = $(ROOTLIBS) $(EXTRA_ROOTLIBS) -lsplinter-3-0
 
 # Make the libraries
 all : $(LIBS)
