@@ -4,13 +4,9 @@ CC         = g++
 SHELL      = /bin/bash
 RM         = rm -f
 
-ifndef ROOTSYS
-	ROOTCFLAGS = $(shell root-config --cflags)
-	ROOTLIBS   = $(shell root-config --libs)
-else
-	ROOTCFLAGS = $(shell $(ROOTSYS)/bin/root-config --cflags | awk -F "-I" '{print $$1" -isystem"$$2}' )
-	ROOTLIBS   = $(shell $(ROOTSYS)/bin/root-config --libs)
-endif
+ROOTCFLAGS = $(shell root-config --cflags)
+ROOTLIBS   = $(shell root-config --libs)
+ROOTLIBDIR = $(shell root-config --libdir)
 EXTRA_ROOTLIBS = -lRooFit -lRooStats -lRooFitCore
 
 # Extensions
@@ -36,7 +32,7 @@ OUTPUT     = $(OBJDIR)/*.$(OBJEXT) $(LIBDIR)/*.$(LIBEXT)
 
 # Compiler flags
 CXXFLAGS   = -Wall -Werror -fPIC -std=c++11 -I$(HDRDIR) $(ROOTCFLAGS)
-LIBFLAGS   = $(ROOTLIBS) $(EXTRA_ROOTLIBS)
+LIBFLAGS   = -Wl,--as-needed $(ROOTLIBS) $(EXTRA_ROOTLIBS) -Wl,-rpath,$(LIBDIR):$(ROOTLIBDIR)
 
 # Make the libraries
 all : $(LIBS)
@@ -44,7 +40,7 @@ all : $(LIBS)
 objects : $(OBJS)
 # Build libraries
 $(LIBDIR)/lib%.$(LIBEXT) : $(OBJDIR)/%.$(OBJEXT)
-	$(CC) -shared $< -o $@ -Wl,--as-needed $(LIBFLAGS)
+	$(CC) -shared $< -o $@ $(LIBFLAGS)
 # Build objects
 $(OBJDIR)/%.$(OBJEXT) : $(SRCDIR)/%.$(SRCEXT) $(HDRS)
 	$(CC) $(CXXFLAGS) -c $< -o $@
