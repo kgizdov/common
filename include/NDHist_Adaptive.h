@@ -12,18 +12,18 @@ class NDHist_Adaptive : public NDHist
 		NDHist_Adaptive(TKDTreeID*);
 		NDHist_Adaptive(TFile*); // Load the binning thing from a file
 		NDHist_Adaptive(const NDHist_Adaptive&);
-		bool IsCompatible(const NDHist_Adaptive&);
-		TTree* SaveToTree();
+		bool IsCompatible(const NDHist_Adaptive&) const;
+		TTree* SaveToTree() const;
 		void LoadFromTree(TTree*);
-		void SetDimScales(std::vector<double>);
-		std::vector<double> GetDimScales() { return dimscale; }
+		void SetDimScales(const std::vector<double>&);
+		std::vector<double> GetDimScales() const { return dimscale; }
 	protected:
 		TKDTreeID* binner;
 		std::vector<double> dimscale;
 	private:
 		void Initialise();
-		int FindBin(std::vector<double>);
-		bool CheckDim(unsigned ndim) { return ndim == (unsigned)binner->GetNDim(); }
+		int FindBin(const std::vector<double>&) const;
+		bool CheckDim(const unsigned ndim) const { return ndim == (unsigned)binner->GetNDim(); }
 };
 NDHist_Adaptive operator+ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs += rhs; return lhs; }
 NDHist_Adaptive operator- (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs -= rhs; return lhs; }

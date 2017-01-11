@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <assert.h>
-NDHist_Fixed::NDHist_Fixed(std::vector<std::tuple<int,double,double>> params)
+NDHist_Fixed::NDHist_Fixed(const std::vector<std::tuple<int,double,double>>& params)
 {
 	std::vector<int> nbinsx;
 	for(auto param : params)
@@ -16,7 +16,7 @@ NDHist_Fixed::NDHist_Fixed(std::vector<std::tuple<int,double,double>> params)
 	}
 	Initialise(nbinsx);
 }
-NDHist_Fixed::NDHist_Fixed(std::vector<std::tuple<int,double*>> params)
+NDHist_Fixed::NDHist_Fixed(const std::vector<std::tuple<int,double*>>& params)
 {
 	std::vector<int> nbinsx;
 	for(auto param : params)
@@ -28,7 +28,7 @@ NDHist_Fixed::NDHist_Fixed(std::vector<std::tuple<int,double*>> params)
 	}
 	Initialise(nbinsx);
 }
-void NDHist_Fixed::Initialise(std::vector<int> nbins_axes)
+void NDHist_Fixed::Initialise(const std::vector<int>& nbins_axes)
 {
 	nbins = 1;
 	for(auto nbinsx : nbins_axes)
@@ -53,7 +53,7 @@ NDHist_Fixed::NDHist_Fixed(const NDHist_Fixed& orig)
 	bincontent = orig.bincontent;
 }
 // Names
-void NDHist_Fixed::SetAxisNames(std::vector<std::string> names)
+void NDHist_Fixed::SetAxisNames(const std::vector<std::string>& names)
 {
 	if(!CheckDim(names.size()))
 		throw std::runtime_error("NDHist_Fixed ERROR: Number of names doesn't match number of axes.");
@@ -61,7 +61,7 @@ void NDHist_Fixed::SetAxisNames(std::vector<std::string> names)
 		axes[idim].SetName(names[idim].c_str());
 }
 // Titles
-void NDHist_Fixed::SetAxisTitles(std::vector<std::string> titles)
+void NDHist_Fixed::SetAxisTitles(const std::vector<std::string>& titles)
 {
 	if(!CheckDim(titles.size()))
 		throw std::runtime_error("NDHist_Fixed ERROR: Number of titles doesn't match number of axes.");
@@ -69,7 +69,7 @@ void NDHist_Fixed::SetAxisTitles(std::vector<std::string> titles)
 		axes[idim].SetTitle(titles[idim].c_str());
 }
 // Find a bin
-int NDHist_Fixed::FindBin(std::vector<double> x)
+int NDHist_Fixed::FindBin(const std::vector<double>& x) const
 {
 	std::vector<int> binx;
 	for(auto& axis : axes)
@@ -84,7 +84,7 @@ int NDHist_Fixed::FindBin(std::vector<double> x)
 	return GetBin(binx);
 }
 // Get overall bin index from individual axis indices
-int NDHist_Fixed::GetBin(std::vector<int> binx)
+int NDHist_Fixed::GetBin(const std::vector<int>& binx) const
 {
 //	return binw + waxis.GetNbins() * (binx + xaxis.GetNbins() * (biny + yaxis.GetNbins() * (binz)));
 	if(!CheckDim(binx.size()))
@@ -95,7 +95,7 @@ int NDHist_Fixed::GetBin(std::vector<int> binx)
 	return bin;
 }
 // Comparison of bins and ranges to allow arithmetic
-bool NDHist_Fixed::IsCompatible(const NDHist_Fixed& other)
+bool NDHist_Fixed::IsCompatible(const NDHist_Fixed& other) const
 {
 	if(nbins != other.nbins || !CheckDim(other.axes.size()))
 		return false;

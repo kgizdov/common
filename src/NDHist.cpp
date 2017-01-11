@@ -11,11 +11,7 @@ void NDHist::Initialise()
 NDHist::~NDHist()
 {
 }
-int NDHist::FindBin(std::vector<double> x)
-{
-	return 0; // should be overwritten in the child classes
-}
-void NDHist::Fill(std::vector<double> x)
+void NDHist::Fill(const std::vector<double>& x)
 {
 	if(!this->CheckDim(x.size()))
 		throw std::runtime_error("NDHist ERROR: Datapoint has the wrong dimension.");
@@ -27,7 +23,7 @@ void NDHist::Fill(std::vector<double> x)
 	else
 		bincontent[bin]++;
 }
-double NDHist::Eval(std::vector<double> x)
+double NDHist::Eval(const std::vector<double>& x) const
 {
 	return bincontent[FindBin(x)];
 }
@@ -38,7 +34,7 @@ void NDHist::Clear()
 	under = 0;
 	over = 0;
 }
-double NDHist::MaxBinContent()
+double NDHist::MaxBinContent() const
 {
 	double maxbincontent = bincontent[0];
 	for(auto binc: bincontent)
@@ -46,7 +42,7 @@ double NDHist::MaxBinContent()
 			maxbincontent = binc;
 	return maxbincontent;
 }
-double NDHist::MinBinContent()
+double NDHist::MinBinContent() const
 {
 	double minbincontent = bincontent[0];
 	for(auto binc: bincontent)
@@ -54,11 +50,11 @@ double NDHist::MinBinContent()
 			minbincontent = binc;
 	return minbincontent;
 }
-TH1D* NDHist::BinContentHist()
+TH1D* NDHist::BinContentHist() const
 {
 	return BinContentHist("BinContentHist");
 }
-TH1D* NDHist::BinContentHist(std::string name)
+TH1D* NDHist::BinContentHist(std::string name) const
 {
 	TH1D* hist = new TH1D(name.c_str(),"",100,MinBinContent(),MaxBinContent());
 	for(auto binc: bincontent)
@@ -83,7 +79,7 @@ bool NDHist::Divide(const NDHist& other)
 {
 	return Arithmetic(other,3);
 }
-bool NDHist::IsCompatible(const NDHist& other)
+bool NDHist::IsCompatible(const NDHist& other) const
 {
 	return nbins == other.nbins;
 }
@@ -122,19 +118,16 @@ bool NDHist::Arithmetic(const NDHist& other,int op)
 	}
 	return true;
 }
-void NDHist::Print()
+void NDHist::Print() const
 {
 	for(auto binc: bincontent)
 		std::cout << binc << std::endl;
 }
-double NDHist::Integral()
+double NDHist::Integral() const
 {
 	double sum = 0;
 	for(auto binc: bincontent)
 		sum+=binc;
 	return sum;
 }
-bool NDHist::CheckDim(unsigned ndims)
-{
-	return ndims == 0;
-}
+

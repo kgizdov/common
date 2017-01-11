@@ -7,23 +7,23 @@ class NDHist
 {
 	public:
 		~NDHist();
-		void Fill(std::vector<double>);
+		void Fill(const std::vector<double>&);
 		void Clear();
-		double Eval(std::vector<double>);
-		double MaxBinContent();
-		double MinBinContent();
-		double GetBinContent(int ibin) { return bincontent[ibin]; }
-		double UnderFlow() { return under; }
-		double OverFlow() { return over; }
-		double Integral();
-		TH1D* BinContentHist();
-		TH1D* BinContentHist(std::string);
+		double Eval(const std::vector<double>&) const;
+		double MaxBinContent() const;
+		double MinBinContent() const;
+		double GetBinContent(const int ibin) const { return bincontent[ibin]; }
+		double UnderFlow() const { return under; }
+		double OverFlow() const { return over; }
+		double Integral() const;
+		TH1D* BinContentHist() const;
+		TH1D* BinContentHist(const std::string) const;
 		bool Add(const NDHist&);
 		bool Subtract(const NDHist&);
 		bool Multiply(const NDHist&);
 		bool Divide(const NDHist&);
-		virtual bool IsCompatible(const NDHist&);
-		void Print();
+		virtual bool IsCompatible(const NDHist&) const;
+		void Print() const;
 		NDHist operator= (const NDHist& rhs) { return NDHist(rhs); }
 		bool   operator+=(const NDHist& rhs) { return Add(rhs); }
 		bool   operator-=(const NDHist& rhs) { return Subtract(rhs); }
@@ -36,9 +36,9 @@ class NDHist
 		std::vector<double> bincontent;
 	private:
 		virtual void Initialise();
-		bool Arithmetic(const NDHist&,int);
-		virtual int FindBin(std::vector<double>);
-		virtual bool CheckDim(unsigned);
+		bool Arithmetic(const NDHist&,const int);
+		virtual int FindBin(const std::vector<double>&) const;
+		virtual bool CheckDim(const unsigned) const;
 };
 NDHist operator+ (NDHist lhs, const NDHist& rhs) { lhs += rhs; return lhs; }
 NDHist operator- (NDHist lhs, const NDHist& rhs) { lhs -= rhs; return lhs; }
