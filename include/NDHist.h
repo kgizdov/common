@@ -37,8 +37,8 @@ class NDHist
 	private:
 		virtual void Initialise();
 		bool Arithmetic(const NDHist&,const int);
-		virtual int FindBin(const std::vector<double>&) const;
-		virtual bool CheckDim(const unsigned) const;
+		virtual int FindBin(const std::vector<double>&) const { return 0; }
+		virtual bool CheckDim(const unsigned) const { return true; }
 };
 NDHist operator+ (NDHist lhs, const NDHist& rhs) { lhs += rhs; return lhs; }
 NDHist operator- (NDHist lhs, const NDHist& rhs) { lhs -= rhs; return lhs; }
