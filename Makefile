@@ -38,6 +38,9 @@ LIBFLAGS   = -Wl,--as-needed $(ROOTLIBS) $(EXTRA_ROOTLIBS) -Wl,-rpath,$(LIBDIR):
 all : $(LIBS)
 # Make object files
 objects : $(OBJS)
+# Return flags for compiling with this library
+libflags :
+	@echo $(patsubst $(LIBDIR)/lib%.$(LIBEXT), -l%, $(LIBS))
 # Build libraries
 $(LIBDIR)/lib%.$(LIBEXT) : $(OBJDIR)/%.$(OBJEXT)
 	$(CC) -shared $< -o $@ $(LIBFLAGS)
@@ -47,4 +50,4 @@ $(OBJDIR)/%.$(OBJEXT) : $(SRCDIR)/%.$(SRCEXT) $(HDRS)
 # Remove all the output
 clean :
 	$(RM) $(OUTPUT)
-.PHONY : all objects clean
+.PHONY : all clean objects libflags
