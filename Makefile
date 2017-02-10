@@ -43,10 +43,12 @@ libflags :
 	@echo $(patsubst $(LIBDIR)/lib%.$(LIBEXT), -l%, $(LIBS))
 # Build libraries
 $(LIBDIR)/lib%.$(LIBEXT) : $(OBJDIR)/%.$(OBJEXT)
-	$(CC) -shared $< -o $@ $(LIBFLAGS)
+	@echo "Making shared object $@"
+	@$(CC) -shared $< -o $@ $(LIBFLAGS)
 # Build objects
 $(OBJDIR)/%.$(OBJEXT) : $(SRCDIR)/%.$(SRCEXT) $(HDRS)
-	$(CC) $(CXXFLAGS) -c $< -o $@
+	@echo "Compiling $@"
+	@$(CC) $(CXXFLAGS) -c $< -o $@
 # Remove all the output
 clean :
 	$(RM) $(OUTPUT)
