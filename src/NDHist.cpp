@@ -17,7 +17,7 @@ NDHist::NDHist(const NDHist& orig)
 	, bincontent(orig.bincontent)
 {
 }
-void NDHist::Fill(const std::vector<double>& x, double weight = 1.0)
+void NDHist::Fill(const std::vector<double>& x, double weight)
 {
 	if(!this->CheckDim(x.size()))
 		throw std::runtime_error("NDHist ERROR: Datapoint has the wrong dimension.");

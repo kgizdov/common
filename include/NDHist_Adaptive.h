@@ -17,6 +17,10 @@ class NDHist_Adaptive : public NDHist
 		void LoadFromTree(TTree*);
 		void SetDimScales(const std::vector<double>&);
 		std::vector<double> GetDimScales() const { return dimscale; }
+		friend NDHist_Adaptive operator+ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs += rhs; return lhs; }
+		friend NDHist_Adaptive operator- (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs -= rhs; return lhs; }
+		friend NDHist_Adaptive operator* (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs *= rhs; return lhs; }
+		friend NDHist_Adaptive operator/ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs /= rhs; return lhs; }
 	protected:
 		TKDTreeID* binner;
 		std::vector<double> dimscale;

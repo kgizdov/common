@@ -16,6 +16,10 @@ class NDHist_Fixed : public NDHist
 		bool IsCompatible(const NDHist_Fixed&) const;
 		void SetAxisNames(const std::vector<std::string>&);
 		void SetAxisTitles(const std::vector<std::string>&);
+		friend NDHist_Fixed operator+ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs += rhs; return lhs; }
+		friend NDHist_Fixed operator- (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs -= rhs; return lhs; }
+		friend NDHist_Fixed operator* (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs *= rhs; return lhs; }
+		friend NDHist_Fixed operator/ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs /= rhs; return lhs; }
 	protected:
 		std::vector<TAxis> axes;
 	private:

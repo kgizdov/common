@@ -9,7 +9,7 @@ class NDHist
 		NDHist();
 		NDHist(const NDHist&);
 		~NDHist() {}
-		void Fill(const std::vector<double>&,double);
+		void Fill(const std::vector<double>&,double weight = 1.0);
 		void Clear();
 		double Eval(const std::vector<double>&) const;
 		double MaxBinContent() const;
