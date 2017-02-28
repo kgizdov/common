@@ -24,9 +24,9 @@ class NDHist_Fixed : public NDHist
 		int GetBin(const std::vector<int>&) const;
 		bool CheckDim(const unsigned idim) const { return idim == axes.size(); }
 };
-NDHist_Fixed operator+ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs += rhs; return lhs; }
-NDHist_Fixed operator- (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs -= rhs; return lhs; }
-NDHist_Fixed operator* (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs *= rhs; return lhs; }
-NDHist_Fixed operator/ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs /= rhs; return lhs; }
+/*NDHist_Fixed operator+ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs += rhs; return lhs; }*/
+/*NDHist_Fixed operator- (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs -= rhs; return lhs; }*/
+/*NDHist_Fixed operator* (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs *= rhs; return lhs; }*/
+/*NDHist_Fixed operator/ (NDHist_Fixed lhs, const NDHist_Fixed& rhs) { lhs /= rhs; return lhs; }*/
 #endif
 

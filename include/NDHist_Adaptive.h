@@ -25,9 +25,9 @@ class NDHist_Adaptive : public NDHist
 		int FindBin(const std::vector<double>&) const;
 		bool CheckDim(const unsigned ndim) const { return ndim == (unsigned)binner->GetNDim(); }
 };
-NDHist_Adaptive operator+ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs += rhs; return lhs; }
-NDHist_Adaptive operator- (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs -= rhs; return lhs; }
-NDHist_Adaptive operator* (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs *= rhs; return lhs; }
-NDHist_Adaptive operator/ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs /= rhs; return lhs; }
+/*NDHist_Adaptive operator+ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs += rhs; return lhs; }*/
+/*NDHist_Adaptive operator- (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs -= rhs; return lhs; }*/
+/*NDHist_Adaptive operator* (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs *= rhs; return lhs; }*/
+/*NDHist_Adaptive operator/ (NDHist_Adaptive lhs, const NDHist_Adaptive& rhs) { lhs /= rhs; return lhs; }*/
 #endif
 
