@@ -2,10 +2,17 @@
 #include "itoa.h"
 #include <stdexcept>
 #include <assert.h>
+// Default constructor
+NDHist_Fixed::NDHist_Fixed()
+	: NDHist()
+{
+}
+// Construct from a ROOT histogram
 NDHist_Fixed::NDHist_Fixed(const TH1& hist)
 	: NDHist()
 {
 	int ndim = hist.GetDimension();
+	// Copy the TAxis objects and initialise the local object (NB: axes will be renamed to default values)
 	switch(ndim)
 	{
 		case 1:
@@ -23,6 +30,7 @@ NDHist_Fixed::NDHist_Fixed(const TH1& hist)
 		default:
 			throw std::out_of_range("NDHist_Fixed ERROR: This ROOT histogram claims to be neither 1D, 2D nor 3D.");
 	}
+	// Copy the bin content from the hist
 	under = hist.GetBinContent(0);
 	over = hist.GetBinContent(nbins+1);
 	// Loop over bins in the hist object. I have no idea if my global bin number scheme is the same as in ROOT, however I do know that the TAxis objects are the same.
@@ -49,6 +57,7 @@ NDHist_Fixed::NDHist_Fixed(const TH1& hist)
 		bincontent[localbin] = hist.GetBinContent(histbin+1);
 	}
 }
+// Construct from an ND vector of tuples containing number of bins, axis minimum and maximum
 NDHist_Fixed::NDHist_Fixed(const std::vector<std::tuple<int,double,double>>& params)
 	: NDHist()
 {
@@ -63,6 +72,7 @@ NDHist_Fixed::NDHist_Fixed(const std::vector<std::tuple<int,double,double>>& par
 	}
 	Initialise(nbinsx);
 }
+// Same as the above, but assuming the double pointer is a 2-element array
 NDHist_Fixed::NDHist_Fixed(const std::vector<std::tuple<int,double*>>& params)
 	: NDHist()
 {
@@ -76,6 +86,7 @@ NDHist_Fixed::NDHist_Fixed(const std::vector<std::tuple<int,double*>>& params)
 	}
 	Initialise(nbinsx);
 }
+// Deduce the number of bins, initialise the bin content vector, and rename all the axes
 void NDHist_Fixed::Initialise(const std::vector<int>& nbins_axes)
 {
 	nbins = 1;

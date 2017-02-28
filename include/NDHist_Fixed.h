@@ -8,6 +8,7 @@
 class NDHist_Fixed : public NDHist
 {
 	public:
+		NDHist_Fixed();
 		NDHist_Fixed(const TH1&);
 		NDHist_Fixed(const std::vector<std::tuple<int,double,double>>&); // nbins, low, high ×N
 		NDHist_Fixed(const std::vector<std::tuple<int,double*>>&); // nbins, array of bin edges [nbins+1] ×N
