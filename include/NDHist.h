@@ -6,8 +6,10 @@
 class NDHist
 {
 	public:
-		~NDHist();
-		void Fill(const std::vector<double>&);
+		NDHist();
+		NDHist(const NDHist&);
+		~NDHist() {}
+		void Fill(const std::vector<double>&,double);
 		void Clear();
 		double Eval(const std::vector<double>&) const;
 		double MaxBinContent() const;
@@ -35,7 +37,6 @@ class NDHist
 		double over;
 		std::vector<double> bincontent;
 	private:
-		virtual void Initialise();
 		bool Arithmetic(const NDHist&,const int);
 		virtual int FindBin(const std::vector<double>&) const { return 0; }
 		virtual bool CheckDim(const unsigned) const { return true; }

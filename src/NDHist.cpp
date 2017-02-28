@@ -2,26 +2,32 @@
 #include <stdexcept>
 #include <assert.h>
 #include <iostream>
-void NDHist::Initialise()
-{
-	for(int ibin = nbins; ibin-->0;)
-		bincontent.push_back(0);
-}
-// Destructor
-NDHist::~NDHist()
+// Default constructor
+NDHist::NDHist()
+	: nbins(0)
+	, under(0)
+	, over(0)
 {
 }
-void NDHist::Fill(const std::vector<double>& x)
+// Copy constructor
+NDHist::NDHist(const NDHist& orig)
+	: nbins(orig.nbins)
+	, under(orig.under)
+	, over(orig.over)
+	, bincontent(orig.bincontent)
+{
+}
+void NDHist::Fill(const std::vector<double>& x, double weight = 1.0)
 {
 	if(!this->CheckDim(x.size()))
 		throw std::runtime_error("NDHist ERROR: Datapoint has the wrong dimension.");
 	int bin = this->FindBin(x); // make sure you get the function from the right class
 	if(bin < 0)
-		under++;
+		under+=weight;
 	else if(bin >= nbins)
-		over++;
+		over+=weight;
 	else
-		bincontent[bin]++;
+		bincontent[bin]+=weight;
 }
 double NDHist::Eval(const std::vector<double>& x) const
 {

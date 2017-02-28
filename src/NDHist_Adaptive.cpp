@@ -2,12 +2,15 @@
 #include "TCollection.h"
 #include "TKey.h"
 #include <stdexcept>
-#include <iostream>
-NDHist_Adaptive::NDHist_Adaptive(TKDTreeBinning* _b) : binner(_b->GetTree())
+NDHist_Adaptive::NDHist_Adaptive(TKDTreeBinning* _b)
+	: NDHist()
+	, binner(_b->GetTree())
 {
 	Initialise();
 }
-NDHist_Adaptive::NDHist_Adaptive(TKDTreeID* _b) : binner(_b)
+NDHist_Adaptive::NDHist_Adaptive(TKDTreeID* _b)
+	:	NDHist()
+	, binner(_b)
 {
 	Initialise();
 }
@@ -18,7 +21,6 @@ NDHist_Adaptive::NDHist_Adaptive(TFile* _f)
 	// Look for any TKDTree object in the file
 	while((key = (TKey*)next()))
 	{
-		std::cout << key->GetClassName() << std::endl;
 		if(strcmp(key->GetClassName(),"TKDTree<int,double>")==0)
 		{
 			binner = (TKDTreeID*)key->ReadObj();
@@ -29,18 +31,14 @@ NDHist_Adaptive::NDHist_Adaptive(TFile* _f)
 		throw std::runtime_error("NDHist_Adaptive ERROR: Couldn't find a TKDTree object in the file");
 }
 NDHist_Adaptive::NDHist_Adaptive(const NDHist_Adaptive& orig)
+	: NDHist((NDHist)orig)
+	, binner(orig.binner)
+	, dimscale(orig.dimscale)
 {
-	under = orig.under;
-	over = orig.over;
-	binner = orig.binner;
-	nbins = orig.nbins;
-	bincontent = orig.bincontent;
-	dimscale = orig.dimscale;
 }
 void NDHist_Adaptive::Initialise()
 {
 	nbins = binner->GetNNodes()+1;
-	std::cout << "Adaptively-binned " << binner->GetNDim() << "D histogram with " << nbins << " bins" << std::endl;
 	for(int ibin = nbins; ibin-->0;)
 	{
 		bincontent.push_back(0);
@@ -88,3 +86,4 @@ void NDHist_Adaptive::SetDimScales(const std::vector<double>& newscale)
 		throw std::runtime_error("NDHist_Adaptive ERROR: List of scales has the wrong number of dimensions.");
 	dimscale = newscale;
 }
+
