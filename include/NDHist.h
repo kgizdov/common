@@ -31,6 +31,10 @@ class NDHist
 		bool   operator-=(const NDHist& rhs) { return Subtract(rhs); }
 		bool   operator*=(const NDHist& rhs) { return Multiply(rhs); }
 		bool   operator/=(const NDHist& rhs) { return Divide(rhs); }
+		friend NDHist operator+ (NDHist lhs, const NDHist& rhs) { lhs += rhs; return lhs; }
+		friend NDHist operator- (NDHist lhs, const NDHist& rhs) { lhs -= rhs; return lhs; }
+		friend NDHist operator* (NDHist lhs, const NDHist& rhs) { lhs *= rhs; return lhs; }
+		friend NDHist operator/ (NDHist lhs, const NDHist& rhs) { lhs /= rhs; return lhs; }
 	protected:
 		int nbins;
 		double under;
@@ -41,9 +45,5 @@ class NDHist
 		virtual int FindBin(const std::vector<double>&) const { return 0; }
 		virtual bool CheckDim(const unsigned) const { return true; }
 };
-NDHist operator+ (NDHist lhs, const NDHist& rhs) { lhs += rhs; return lhs; }
-NDHist operator- (NDHist lhs, const NDHist& rhs) { lhs -= rhs; return lhs; }
-NDHist operator* (NDHist lhs, const NDHist& rhs) { lhs *= rhs; return lhs; }
-NDHist operator/ (NDHist lhs, const NDHist& rhs) { lhs /= rhs; return lhs; }
 #endif
 
