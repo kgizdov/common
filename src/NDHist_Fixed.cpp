@@ -1,7 +1,7 @@
 #include "NDHist_Fixed.h"
 #include "itoa.h"
+#include <iostream>
 #include <stdexcept>
-#include <assert.h>
 // Default constructor
 NDHist_Fixed::NDHist_Fixed()
 	: NDHist()
@@ -104,7 +104,7 @@ void NDHist_Fixed::Initialise(const std::vector<int>& nbins_axes)
 }
 // Copy constructor
 NDHist_Fixed::NDHist_Fixed(const NDHist_Fixed& orig)
-	: NDHist((NDHist)orig)
+	: NDHist(orig)
 	, axes(orig.axes)
 {
 }
@@ -127,6 +127,8 @@ void NDHist_Fixed::SetAxisTitles(const std::vector<std::string>& titles)
 // Find a bin
 int NDHist_Fixed::FindBin(const std::vector<double>& x) const
 {
+	if(!CheckDim(x.size()))
+		throw std::runtime_error("NDHist_Fixed ERROR: Dimension of datapoint does not match number of axes.");
 	std::vector<int> binx;
 	for(auto& axis : axes)
 	{

@@ -1,6 +1,5 @@
 #include "NDHist.h"
 #include <stdexcept>
-#include <assert.h>
 #include <iostream>
 // Default constructor
 NDHist::NDHist()
@@ -84,10 +83,6 @@ bool NDHist::Multiply(const NDHist& other)
 bool NDHist::Divide(const NDHist& other)
 {
 	return Arithmetic(other,3);
-}
-bool NDHist::IsCompatible(const NDHist& other) const
-{
-	return nbins == other.nbins;
 }
 bool NDHist::Arithmetic(const NDHist& other,int op)
 {

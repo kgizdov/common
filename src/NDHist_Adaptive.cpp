@@ -31,7 +31,7 @@ NDHist_Adaptive::NDHist_Adaptive(TFile* _f)
 		throw std::runtime_error("NDHist_Adaptive ERROR: Couldn't find a TKDTree object in the file");
 }
 NDHist_Adaptive::NDHist_Adaptive(const NDHist_Adaptive& orig)
-	: NDHist((NDHist)orig)
+	: NDHist(orig)
 	, binner(orig.binner)
 	, dimscale(orig.dimscale)
 {

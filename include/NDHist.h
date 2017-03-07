@@ -24,9 +24,8 @@ class NDHist
 		bool Subtract(const NDHist&);
 		bool Multiply(const NDHist&);
 		bool Divide(const NDHist&);
-		virtual bool IsCompatible(const NDHist&) const;
+		virtual bool IsCompatible(const NDHist&) const { return false; };
 		void Print() const;
-		NDHist operator= (const NDHist& rhs) { return NDHist(rhs); }
 		bool   operator+=(const NDHist& rhs) { return Add(rhs); }
 		bool   operator-=(const NDHist& rhs) { return Subtract(rhs); }
 		bool   operator*=(const NDHist& rhs) { return Multiply(rhs); }
@@ -42,8 +41,8 @@ class NDHist
 		std::vector<double> bincontent;
 	private:
 		bool Arithmetic(const NDHist&,const int);
-		virtual int FindBin(const std::vector<double>&) const { return 0; }
-		virtual bool CheckDim(const unsigned) const { return true; }
+		virtual int FindBin(const std::vector<double>&) const { return -1; }
+		virtual bool CheckDim(const unsigned) const { return false; }
 };
 #endif
 
