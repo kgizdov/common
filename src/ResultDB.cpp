@@ -1,8 +1,8 @@
-#include "ResultDB.h"
 #include <fstream>
 #include <iostream>
 #include <iomanip>
 #include <regex>
+#include "ResultDB.h"
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -49,7 +49,7 @@ ResultDB::~ResultDB()
 }
 bool ResultDB::Open(string filename)
 {
-  if(_isopen) 
+  if(_isopen)
   {
     cerr << "Cannot open " << filename << " because " << _filename << " is already open. Close it first." << endl;
     return false;
