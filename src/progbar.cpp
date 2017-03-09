@@ -4,9 +4,9 @@
 	After	 loop: call progbar::terminate()
 	Example:
 
-		int n = 1000;
+		unsigned n = 1000;
 		progbar bar(n);
-		for(int i = 0; i < n; i++)
+		for(unsigned i = 0; i < n; i++)
 		{
 			if(i%10==0) bar.print(i);
 		}
@@ -25,19 +25,35 @@ using std::setw;
 using std::string;
 progbar::progbar(int n_events)
 {
-	nevents  = n_events;
+	if (n_events < 0) n_events = -n_events;
+	progbar(static_cast<unsigned>(n_events));
+}
+progbar::progbar(unsigned n_events)
+{
+	nevents  = n_events == 0 ? 1 : n_events;
 	barwidth = 80;
 	t0       = time(0);
 }
 progbar::progbar(int n_events, int bar_width)
 {
-	nevents  = n_events;
-	barwidth = bar_width;
+	if (n_events < 0) n_events = -n_events;
+	if (bar_width < 0) bar_width = -bar_width;
+	progbar(static_cast<unsigned>(n_events),static_cast<unsigned>(bar_width));
+}
+progbar::progbar(unsigned n_events, unsigned bar_width)
+{
+	nevents  = n_events == 0 ? 1 : n_events;
+	barwidth = bar_width == 0 ? 1 : bar_width;
 	t0       = time(0);
 }
 void progbar::print(int ievent)
 {
-	int perc = static_cast<int>((100 * ievent/nevents) + 1);
+	if (ievent < 0) ievent = -ievent;
+	print(static_cast<unsigned>(ievent));
+}
+void progbar::print(unsigned ievent)
+{
+	unsigned perc = static_cast<unsigned>((100 * ievent/nevents) + 1);
 	// \e[?25l hides the cursor
 	cout << "\r\e[?25l ┃";
 	for (unsigned ibar = 0; ibar < (perc*barwidth)/100; ibar++)

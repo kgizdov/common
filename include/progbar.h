@@ -4,11 +4,14 @@ class progbar
 {
 	private:
 		long t0;
-		int nevents, barwidth;
+		unsigned nevents, barwidth;
 	public:
 		progbar(int);
 		progbar(int, int);
+		progbar(unsigned);
+		progbar(unsigned, unsigned);
 		void print(int);
+		void print(unsigned);
 		void terminate();
 		void reset();
 };
