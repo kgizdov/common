@@ -1,6 +1,8 @@
 #ifndef __SAFELOG_H__
 #define __SAFELOG_H__
 #include <cmath>
+#include <type_traits>
+#include <typeinfo>
 float safeLog(float x)
 {
 	// Keep numbers in a sensible range for the sake of MVA training
@@ -11,18 +13,14 @@ float safeLog(float x)
 namespace safe
 {
 	template<typename T>
-	T log(T x, T low_bound = static_cast<T>(-INFINITY))
+	auto log(T x, long double low_bound = static_cast<long double>(-INFINITY))
 	{
+		typedef typename std::conditional<std::is_integral<T>::value, double, T>::type _type;
 		if (x > std::exp(low_bound))
 		{
 			return std::log(x);
 		}
-		return low_bound;
-	}
-	template<typename T, typename U> T
-	log(T x, U low_bound)
-	{
-		return log(x, static_cast<T>(low_bound));
+		return static_cast<_type>(low_bound);
 	}
 }  // namespace safe
 
