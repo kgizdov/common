@@ -37,12 +37,12 @@ progbar::progbar(int n_events, int bar_width)
 }
 void progbar::print(int ievent)
 {
-	int perc = (int)(100*ievent/nevents)+1;
+	int perc = static_cast<int>((100 * ievent/nevents) + 1);
 	// \e[?25l hides the cursor
 	cout << "\r\e[?25l ┃";
-	for(int ibar = 0; ibar < (perc*barwidth)/100; ibar++)
+	for (unsigned ibar = 0; ibar < (perc*barwidth)/100; ibar++)
 		cout << "█";
-	for(int ibar = (perc*barwidth)/100; ibar < barwidth; ibar++)
+	for (unsigned ibar = (perc*barwidth)/100; ibar < barwidth; ibar++)
 		cout << "░";
 	cout << "┃ " << perc << "% " << flush;
 	long t1 = time(0);
