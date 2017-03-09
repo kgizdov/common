@@ -19,6 +19,10 @@ namespace safe
 		}
 		return low_bound;
 	}
+	template<typename T, typename U> T log(T x, U low_bound)
+	{
+		return log(x, static_cast<T>(low_bound));
+	}
 }  // namespace safe
 
 #endif
