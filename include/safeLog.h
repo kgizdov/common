@@ -15,7 +15,7 @@ namespace safe
 	using _type = typename std::conditional<std::is_integral<T>::value, double, T>::type;
 
 	template<typename T>
-	auto log(T x, long double low_bound = static_cast<long double>(-INFINITY)) -> _type<T>
+	auto log(T x, _type<T> low_bound = static_cast<_type<T> >(-INFINITY)) -> _type<T>
 	{
 		if (x > std::exp(low_bound))
 		{
