@@ -1,7 +1,7 @@
 #ifndef __CLONEINFO_H__
 #define __CLONEINFO_H__
 #include <vector>
-using namespace std;
+using std::vector;
 class CloneInfo
 {
 public:

@@ -4,7 +4,7 @@
 #include <cmath>
 #include "TTree.h"
 #include "TCanvas.h" // might want it to run faster
-using namespace std;
+using std::string;
 struct Cut_t
 {
   Cut_t(string, string);

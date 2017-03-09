@@ -2,10 +2,14 @@
 #include "TCollection.h"
 #include "TKey.h"
 #include "TDirectoryFile.h"
+#include <iostream>
 #include <stdexcept>
 #include <vector>
-#include <iostream>
-using namespace std;
+using std::cout;
+using std::endl;
+using std::runtime_error;
+using std::string;
+using std::vector;
 /*****************************************************************************/
 // Overloading the function with all reasonable ways you might want to call it
 TTree* GetTree(string filename)

@@ -1,6 +1,5 @@
 #ifndef __PROGBAR_H__
 #define __PROGBAR_H__
-using namespace std;
 class progbar
 {
 	private:

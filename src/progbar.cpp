@@ -17,7 +17,12 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-using namespace std;
+using std::cout;
+using std::endl;
+using std::flush;
+using std::setfill;
+using std::setw;
+using std::string;
 progbar::progbar(int n_events)
 {
 	nevents=n_events;

@@ -2,7 +2,8 @@
 #define __ITOA_H__
 #include <sstream>
 #include <string>
-using namespace std;
+using std::string;
+using std::stringstream;
 // Convert integer to string.
 string itoa(int value)
 {

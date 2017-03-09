@@ -3,6 +3,12 @@
 #include <iostream>
 #include <iomanip>
 #include <regex>
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::ofstream;
+using std::regex;
 result::result()
   : name("temp")
   , type("decimal")

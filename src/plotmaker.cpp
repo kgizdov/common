@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
-using namespace std;
+using std::stringstream;
 /*****************************************************************************/
 // Constructor
 plotmaker::plotmaker(RooPlot* mainplot) :

@@ -7,7 +7,7 @@
 #include "RooPlot.h"
 #include "TLatex.h"
 #include <string>
-using namespace std;
+using std::string;
 class plotmaker
 {
 	private:

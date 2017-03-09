@@ -5,7 +5,11 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
-using namespace std;
+using std::fixed;
+using std::setprecision;
+using std::string;
+using std::stringstream;
+using std::vector;
 int order(double value)
 {
   if(abs(value)<1e-100) return 0;

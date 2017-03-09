@@ -2,7 +2,7 @@
 #define __CLONETAGGER_H__
 #include "CloneInfo.h"
 #include <vector>
-using namespace std;
+using std::vector;
 class CloneTagger
 {
 private:
