@@ -10,31 +10,8 @@ float safeLog(float x)
 
 namespace safe
 {
-	float log(int x, float low_bound = -INFINITY)
-	{
-		if (x > std::exp(low_bound))
-		{
-			return std::log(x);
-		}
-		return low_bound;
-	}
-	float log(float x, float low_bound = -INFINITY)
-	{
-		if (x > std::exp(low_bound))
-		{
-			return std::log(x);
-		}
-		return low_bound;
-	}
-	double log(double x, double low_bound = -INFINITY)
-	{
-		if (x > std::exp(low_bound))
-		{
-			return std::log(x);
-		}
-		return low_bound;
-	}
-	long double log(long double x, long double low_bound = -INFINITY)
+	template<typename T>
+	T log(T x, T low_bound = static_cast<T>(-INFINITY))
 	{
 		if (x > std::exp(low_bound))
 		{
