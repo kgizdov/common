@@ -66,7 +66,7 @@ bool ResultDB::Open(string filename)
   {
     result row;
     input >> row.name >> row.type >> row.value >> row.error;
-    if(row.name != "temp") // why is this here?
+    if(row.name.compare("temp") != 0)  // why is this here?
       _table.push_back(row);
   } while(!input.eof());
   input.close();
@@ -108,22 +108,22 @@ bool ResultDB::Close()
 }
 void ResultDB::Update(string name, string type, double value, double error)
 {
-  if(name == "") name = "temp";
-  if(type == "") type = "default";
+  if(name.compare("") == 0) name = "temp";
+  if(type.compare("") == 0) type = "default";
   find(name)->set(type, value, error);
   _ismod = true;
 }
 result* ResultDB::find(string name)
 {
   for(auto& row : _table)
-    if(row.name == name)
+    if(row.name.compare(name) == 0)
       return &row;
   _table.push_back(result(name,"decimal",0,0));
   return &_table.back();
 }
 void ResultDB::Export(string filename)
 {
-  if(filename == "")
+  if(filename.compare("") == 0)
   {
     cerr << "Filename cannot be empty." << endl;
     return;
@@ -149,7 +149,7 @@ void ResultDB::Print(string name)
 {
   for(auto row: _table)
   {
-    if(name == row.name)
+    if(name.compare(row.name) == 0)
     {
       cout << "rawvalue  :\t" << row.value << endl;
       cout << "rawerror  :\t" << row.error << endl;
@@ -165,7 +165,7 @@ void ResultDB::Print(string name)
 }
 format_result::format_result(const result& row)
 {
-  bool perc = row.type == "percent";
+  bool perc = row.type.compare("percent") == 0;
   double factor = perc ? 100 : 1;
   double val = row.value*factor, err = row.error*factor;
   string str = row.name;
