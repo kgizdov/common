@@ -170,14 +170,14 @@ format_result::format_result(const result& row)
   double val = row.value*factor, err = row.error*factor;
   string str = row.name;
   regex pat = regex("[^A-Za-z]");
-  macroname = regex_replace(str,pat,string(""));
+  macroname = regex_replace(str, pat, string(""));
   int ov = order(val);
   int oe = order(err);
   int e3sf;
   if(abs(err)<1e-100)
   {
-    if(ov<2) val = roundSF(val,3); // Round to 3sf if no error and order < 2
-    else val = roundDP(val,0); // If no error and order > 2, round to nearest int
+    if(ov<2) val = roundSF(val, 3); // Round to 3sf if no error and order < 2
+    else val = roundDP(val, 0); // If no error and order > 2, round to nearest int
     err = 0;
     error = "0";
     scerr = "0";
@@ -187,7 +187,7 @@ format_result::format_result(const result& row)
   }
   else
   {
-    e3sf = floor(err*pow(10,3-ceil(log10(abs(err))))); // first 3 significant digits of the error as a 3-digit int
+    e3sf = floor(err * pow(10, 3 - ceil(log10(abs(err))))); // first 3 significant digits of the error as a 3-digit int
     nesf = 1;
     if(e3sf < 100)
     {
@@ -207,17 +207,17 @@ format_result::format_result(const result& row)
       nesf = 2;
       oe++;
     }
-    ndp = oe<0 ? nesf-1-oe : 0;
-    nvsf = nesf + ov - oe;
-    val = roundSF(val,nvsf);
-    err = roundSF(err,nesf);
+    ndp   = oe<0 ? nesf-1-oe : 0;
+    nvsf  = nesf + ov - oe;
+    val   = roundSF(val,nvsf);
+    err   = roundSF(err,nesf);
     error = tostring(err,ndp);
     scerr = scinot(err,nesf-1);
   }
   value = tostring(val,ndp);
   scval = scinot(val,nvsf-1);
-  both = value + " \\pm " + error;
-  scbo = scinot(val,err,nvsf-1);
+  both  = value + " \\pm " + error;
+  scbo  = scinot(val,err,nvsf-1);
 //  if(perc)
 //  {
 //    value += "\\,\\%";
