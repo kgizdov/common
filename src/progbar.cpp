@@ -12,11 +12,11 @@
 		}
 		bar.terminate();
 */
-#include "progbar.h"
 #include <time.h>
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include "progbar.h"
 using std::cout;
 using std::endl;
 using std::flush;
@@ -25,15 +25,15 @@ using std::setw;
 using std::string;
 progbar::progbar(int n_events)
 {
-	nevents=n_events;
-	barwidth=80;
-	t0=time(0);
+	nevents  = n_events;
+	barwidth = 80;
+	t0       = time(0);
 }
 progbar::progbar(int n_events, int bar_width)
 {
-	nevents=n_events;
-	barwidth=bar_width;
-	t0=time(0);
+	nevents  = n_events;
+	barwidth = bar_width;
+	t0       = time(0);
 }
 void progbar::print(int ievent)
 {
@@ -57,6 +57,6 @@ void progbar::terminate()
 }
 void progbar::reset()
 {
-	t0=time(0);
+	t0 = time(0);
 	return;
 }
