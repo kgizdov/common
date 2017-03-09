@@ -12,14 +12,16 @@ float safeLog(float x)
 namespace safe
 {
 	template<typename T>
-	auto log(T x, long double low_bound = static_cast<long double>(-INFINITY))
+	using _type = typename std::conditional<std::is_integral<T>::value, double, T>::type;
+
+	template<typename T>
+	auto log(T x, long double low_bound = static_cast<long double>(-INFINITY)) -> _type<T>
 	{
-		typedef typename std::conditional<std::is_integral<T>::value, double, T>::type _type;
 		if (x > std::exp(low_bound))
 		{
 			return std::log(x);
 		}
-		return static_cast<_type>(low_bound);
+		return static_cast<_type<T> >(low_bound);
 	}
 }  // namespace safe
 
