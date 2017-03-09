@@ -2,7 +2,6 @@
 #define __SAFELOG_H__
 #include <cmath>
 #include <type_traits>
-#include <typeinfo>
 float safeLog(float x)
 {
 	// Keep numbers in a sensible range for the sake of MVA training
